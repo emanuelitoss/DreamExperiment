@@ -24,8 +24,8 @@
 // ********************************************************************
 //
 //
-/// \file exampleB1.cc
-/// \brief Main program of the B1 example
+/// \file dream_simulation.cc
+/// \brief Main program of the DREAM experiment simulation
 
 #include "DetectorConstruction.hh"
 #include "ActionInitialization.hh"
