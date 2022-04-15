@@ -27,8 +27,8 @@
 /// \file exampleB1.cc
 /// \brief Main program of the B1 example
 
-#include "B1DetectorConstruction.hh"
-#include "B1ActionInitialization.hh"
+#include "DetectorConstruction.hh"
+#include "ActionInitialization.hh"
 
 #include "G4RunManagerFactory.hh"
 
