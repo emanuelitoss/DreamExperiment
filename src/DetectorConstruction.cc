@@ -241,6 +241,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
+  fScoringVolume = BGO_LogicalVolume;
+
   //
   //always return the physical World
   //
