@@ -27,11 +27,11 @@
 /// \file B1ActionInitialization.cc
 /// \brief Implementation of the B1ActionInitialization class
 
-#include "B1ActionInitialization.hh"
-#include "B1PrimaryGeneratorAction.hh"
-#include "B1RunAction.hh"
-#include "B1EventAction.hh"
-#include "B1SteppingAction.hh"
+#include "ActionInitialization.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
+#include "EventAction.hh"
+#include "SteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

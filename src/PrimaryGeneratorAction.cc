@@ -27,7 +27,7 @@
 /// \file B1PrimaryGeneratorAction.cc
 /// \brief Implementation of the B1PrimaryGeneratorAction class
 
-#include "B1PrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.hh"
 
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"

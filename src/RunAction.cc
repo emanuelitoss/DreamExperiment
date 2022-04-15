@@ -27,9 +27,9 @@
 /// \file B1RunAction.cc
 /// \brief Implementation of the B1RunAction class
 
-#include "B1RunAction.hh"
-#include "B1PrimaryGeneratorAction.hh"
-#include "B1DetectorConstruction.hh"
+#include "RunAction.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "DetectorConstruction.hh"
 // #include "B1Run.hh"
 
 #include "G4RunManager.hh"

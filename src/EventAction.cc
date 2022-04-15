@@ -27,8 +27,8 @@
 /// \file B1EventAction.cc
 /// \brief Implementation of the B1EventAction class
 
-#include "B1EventAction.hh"
-#include "B1RunAction.hh"
+#include "EventAction.hh"
+#include "RunAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
