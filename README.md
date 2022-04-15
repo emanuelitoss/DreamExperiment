@@ -1,5 +1,5 @@
 # Dream Experiment
-This repo contains the DREAM simulation project via Geant4.
+This repo contains the DREAM simulation project via Geant4
 | @Sapienza - Università di Roma
 | Team:
         - Federico Manganella
