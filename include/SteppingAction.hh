@@ -24,33 +24,33 @@
 // ********************************************************************
 //
 //
-/// \file B1SteppingAction.hh
-/// \brief Definition of the B1SteppingAction class
+/// \file SteppingAction.hh
+/// \brief Definition of the SteppingAction class
 
-#ifndef B1SteppingAction_h
-#define B1SteppingAction_h 1
+#ifndef SteppingAction_h
+#define SteppingAction_h 1
 
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
 
-class B1EventAction;
+class EventAction;
 
 class G4LogicalVolume;
 
 /// Stepping action class
 /// 
 
-class B1SteppingAction : public G4UserSteppingAction
+class SteppingAction : public G4UserSteppingAction
 {
   public:
-    B1SteppingAction(B1EventAction* eventAction);
-    virtual ~B1SteppingAction();
+    SteppingAction(EventAction* eventAction);
+    virtual ~SteppingAction();
 
     // method from the base class
     virtual void UserSteppingAction(const G4Step*);
 
   private:
-    B1EventAction*  fEventAction;
+    EventAction*  fEventAction;
     G4LogicalVolume* fScoringVolume;
 };
 
