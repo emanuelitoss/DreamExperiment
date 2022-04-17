@@ -27,9 +27,9 @@
 /// \file SteppingAction.cc
 /// \brief Implementation of the SteppingAction class
 
-#include "SteppingAction.hh"
-#include "EventAction.hh"
-#include "DetectorConstruction.hh"
+#include "../include/SteppingAction.hh"
+#include "../include/EventAction.hh"
+#include "../include/DetectorConstruction.hh"
 
 #include "G4Step.hh"
 #include "G4Event.hh"

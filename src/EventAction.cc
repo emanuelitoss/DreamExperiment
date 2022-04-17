@@ -27,8 +27,8 @@
 /// \file EventAction.cc
 /// \brief Implementation of the EventAction class
 
-#include "EventAction.hh"
-#include "RunAction.hh"
+#include "../include/EventAction.hh"
+#include "../include/RunAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -39,7 +39,7 @@ EventAction::EventAction(RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdep(0.)
-{} 
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

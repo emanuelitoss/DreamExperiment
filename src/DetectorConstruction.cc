@@ -27,7 +27,7 @@
 /// \file DetectorConstruction.cc
 /// \brief Implementation of the DetectorConstruction class
 
-#include "DetectorConstruction.hh"
+#include "../include/DetectorConstruction.hh"
 
 #include "G4RunManager.hh" 
 #include "G4NistManager.hh"

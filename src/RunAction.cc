@@ -27,9 +27,9 @@
 /// \file RunAction.cc
 /// \brief Implementation of the RunAction class
 
-#include "RunAction.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "DetectorConstruction.hh"
+#include "../include/RunAction.hh"
+#include "../include/PrimaryGeneratorAction.hh"
+#include "../include/DetectorConstruction.hh"
 // #include "Run.hh"
 
 #include "G4RunManager.hh"

@@ -27,7 +27,7 @@
 /// \file PrimaryGeneratorAction.cc
 /// \brief Implementation of the PrimaryGeneratorAction class
 
-#include "PrimaryGeneratorAction.hh"
+#include "../include/PrimaryGeneratorAction.hh"
 
 #include <cmath>
 
