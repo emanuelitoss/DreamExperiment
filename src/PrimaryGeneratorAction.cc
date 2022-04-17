@@ -29,6 +29,8 @@
 
 #include "PrimaryGeneratorAction.hh"
 
+#include <cmath>
+
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
@@ -38,6 +40,18 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+// Muons at sea level have pdf of azimuthal angle proportional to cos(theta)**2.
+// But I don't need theta, I only need cos(theta)!
+// then I generate uniformly a variable in [0, 1] and I evaluate cos(theta)
+G4ThreeVector AngularVectorGenerator(){
+  G4double Phi = G4UniformRand()*2*M_PI;
+  G4double cosTheta = sqrt(G4UniformRand());
+  G4double sinTheta = sqrt(1 - cosTheta*cosTheta);
+  return G4ThreeVector(sinTheta*cos(Phi), sinTheta*sin(Phi), cosTheta);
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -55,7 +69,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4ParticleDefinition* particle
     = particleTable->FindParticle(particleName="mu-");
   fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  fParticleGun->SetParticleMomentumDirection(AngularVectorGenerator());
   fParticleGun->SetParticleEnergy(3.*GeV);
 }
 
@@ -100,17 +114,17 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
      "MyCode0002",JustWarning,msg);
   }
 
-  /*
+  
   // Uniform distribution in the envelop volume
   G4double size = 0.8; 
   G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
   G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
   G4double z0 = -0.5 * envSizeZ;
-  */
-
+  
+  /*
   G4double x0 = 1.1*cm * G4UniformRand();
   G4double y0 = 9*cm * G4UniformRand();
-  G4double z0 = -0.5 * envSizeZ;
+  G4double z0 = -0.5 * envSizeZ;*/
 
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
