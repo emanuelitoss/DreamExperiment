@@ -69,7 +69,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4ParticleDefinition* particle
     = particleTable->FindParticle(particleName="mu-");
   fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(AngularVectorGenerator());
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(3.*GeV);
 }
 
@@ -116,15 +116,17 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   
   // Uniform distribution in the envelop volume
+  /*
   G4double size = 0.8; 
   G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
   G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
   G4double z0 = -0.5 * envSizeZ;
+  */
   
-  /*
+  // Uniform distribution in the BGO crystal
   G4double x0 = 1.1*cm * G4UniformRand();
   G4double y0 = 9*cm * G4UniformRand();
-  G4double z0 = -0.5 * envSizeZ;*/
+  G4double z0 = -0.5 * envSizeZ;
 
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
