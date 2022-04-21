@@ -43,14 +43,11 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-// Muons at sea level have pdf of azimuthal angle proportional to cos(theta)**2.
-// But I don't need theta, I only need cos(theta)!
-// then I generate uniformly a variable in [0, 1] and I evaluate cos(theta)
+// Muons at sea level have pdf of azimuthal angle proportional to cos(theta)^2.
 G4ThreeVector AngularVectorGenerator(){
   G4double Phi = G4UniformRand()*2*M_PI;
-  G4double cosTheta = sqrt(G4UniformRand());
-  G4double sinTheta = sqrt(1 - cosTheta*cosTheta);
-  return G4ThreeVector(sinTheta*cos(Phi), sinTheta*sin(Phi), cosTheta);
+  G4double Theta = G4UniformRand()*(M_PI/10);
+  return G4ThreeVector(sin(Theta)*cos(Phi), sin(Theta)*sin(Phi), cos(Theta));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

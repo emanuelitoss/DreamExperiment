@@ -27,8 +27,8 @@
 /// \file dream_simulation.cc
 /// \brief Main program of the DREAM experiment simulation
 
-#include "DetectorConstruction.hh"
-#include "ActionInitialization.hh"
+#include "include/DetectorConstruction.hh"
+#include "include/ActionInitialization.hh"
 
 #include "G4RunManagerFactory.hh"
 
