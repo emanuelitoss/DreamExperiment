@@ -1,0 +1,5 @@
+TO DO LIST
+- Inserire la distribuzione angolare dei muoni e anche la distribuzione in energia al sea level, anzichè tutti in direzione (0,0,1) e con energia 3 GeV
+- Come recuperare e fare lo store dei dati dalla simulazione (energia persa, fotoni prodotti, etc, etc..)
+- Ci sono oggetti/classi per l'analisi dati G4 o usiamo quelle di Root? Proviamo con Root?
+- Ulteoriori modifiche più in là: inserire fotomoltiplicatori?
