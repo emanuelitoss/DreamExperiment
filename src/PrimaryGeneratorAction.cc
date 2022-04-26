@@ -66,7 +66,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4ParticleDefinition* particle
     = particleTable->FindParticle(particleName="mu-");
   fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,-1.,0.));
   fParticleGun->SetParticleEnergy(3.*GeV);
 }
 
@@ -88,7 +88,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // on DetectorConstruction class we get Envelope volume
   // from G4LogicalVolumeStore.
   
-  G4double envSizeXY = 0;
+  G4double envSizeX = 0;
+  G4double envSizeY = 0;
   G4double envSizeZ = 0;
 
   if (!fEnvelopeBox)
@@ -99,7 +100,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   if ( fEnvelopeBox ) {
-    envSizeXY = fEnvelopeBox->GetXHalfLength()*2.;
+    envSizeX = fEnvelopeBox->GetXHalfLength()*2.;
+    envSizeY = fEnvelopeBox->GetYHalfLength()*2.;
     envSizeZ = fEnvelopeBox->GetZHalfLength()*2.;
   }  
   else  {
@@ -121,9 +123,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   */
   
   // Uniform distribution in the BGO crystal
-  G4double x0 = 1.1*cm * G4UniformRand();
-  G4double y0 = 9*cm * G4UniformRand();
-  G4double z0 = -0.5 * envSizeZ;
+  G4double x0 = (G4UniformRand() - 0.5) * 18*cm;
+  G4double y0 = +0.5 * envSizeY;
+  G4double z0 = (G4UniformRand() - 0.5) * 2.2*cm;
 
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
