@@ -40,40 +40,32 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 DetectorConstruction::DetectorConstruction()
 : G4VUserDetectorConstruction(),
   fScoringVolume(0)
 { }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+DetectorConstruction::~DetectorConstruction(){ }
 
-DetectorConstruction::~DetectorConstruction()
-{ }
+G4VPhysicalVolume* DetectorConstruction::Construct(){
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4VPhysicalVolume* DetectorConstruction::Construct()
-{  
   // Get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
 
-  //
-  // Dimensions BGO and plastic scintillators
-  //
+  // Dimensions of BGO and plastic scintillators
   G4double shape_bgoXZ = 2.2*cm, shape_bgoY = 18*cm;
-  G4double shape_plasticX = 5*cm, shape_plasticY = 1.5*cm, shape_plasticZ = 10*cm;
+  G4double shape_plasticX = 5*cm, shape_plasticY = 1*cm, shape_plasticZ = 10*cm;
   G4double distance_scintillators = 0.5*cm;
   G4double distance_BGOscintillators = 10*cm;
-  G4double H = 2 * shape_plasticZ + distance_BGOscintillators + distance_scintillators;
-
-  G4double radius = (4 * H*H + shape_bgoY*shape_bgoY) / (8*H);
-  G4double radius_sphere = radius * 1.2;
   
-  // Envelope parameters
-  G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR");
+  // minimal radius such that the experiment is circumscribed in a sphere
+  // we willl use minimal radius + 20%
+  G4double H = 2 * shape_plasticZ + distance_BGOscintillators + distance_scintillators;
+  G4double minimal_radius = (4 * H*H + shape_bgoY*shape_bgoY) / (8*H);
+  G4double radius_sphere = minimal_radius * 1.2;
+  
+  // Envelope material
+  G4Material* envelope_material = nist->FindOrBuildMaterial("G4_AIR");
    
   // Option to switch on/off checking of volumes overlaps
   G4bool checkOverlaps = true;
@@ -81,14 +73,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //     
   // World
   //
-  G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
+  G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
   
-  G4Sphere* solidWorld = 
-    new G4Sphere("World", 0, radius_sphere, 0.*deg, 360.*deg, 0.*deg, 180.*deg);
+  G4Sphere* solidWorld = new G4Sphere("World", 0, 3*radius_sphere, 0.*deg, 360.*deg, 0.*deg, 180.*deg);
       
   G4LogicalVolume* logicWorld =                         
     new G4LogicalVolume(solidWorld,          //its solid
-                        world_mat,           //its material
+                        world_material,      //its material
                         "World");            //its name
                                    
   G4VPhysicalVolume* physWorld = 
@@ -108,7 +99,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       
   G4LogicalVolume* logicEnv =                         
     new G4LogicalVolume(solidEnv,            //its solid
-                        env_mat,             //its material
+                        envelope_material,   //its material
                         "Envelope");         //its name
                
   new G4PVPlacement(0,                       //no rotation
@@ -124,7 +115,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //     
   // BGO Crystal bgo_material
   //  
-  G4double pos_BGO = radius - 2 * shape_plasticZ - distance_BGOscintillators - distance_scintillators - shape_bgoXZ / 2;
+  // the position in choosen in order to minimize the envelope sphere
+  G4double pos_BGO = minimal_radius - 2 * shape_plasticZ - distance_BGOscintillators - distance_scintillators - shape_bgoXZ / 2;
   G4Material* bgo_material = nist->FindOrBuildMaterial("G4_BGO");
   G4ThreeVector bgo_position = G4ThreeVector(0, 0, pos_BGO);
   
@@ -147,17 +139,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     checkOverlaps);          //overlaps checking
   //     
   // Plastic scintillator
-  //  
-  G4double pos_scint1 = radius - distance_scintillators - 1.5 * shape_plasticZ;
-  G4double pos_scint2 = radius - shape_plasticZ / 2;
+  //
+  // the position in choosen in order to minimize the envelope sphere
+  G4double pos_scint1 = minimal_radius - distance_scintillators - 1.5 * shape_plasticZ;
+  G4double pos_scint2 = minimal_radius - shape_plasticZ / 2;
   G4Material* plastic_material = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
         
   // Plastic scintillators shape
   G4Box* PlasticShape = new G4Box("BGO Box", 0.5*shape_plasticX, 0.5*shape_plasticY, 0.5*shape_plasticZ);
 
   // Plastic scintillators positions
-  G4ThreeVector trigger_1 = G4ThreeVector(0, 0, pos_scint1);
-  G4ThreeVector trigger_2 = G4ThreeVector(0, 0, pos_scint2);
+  G4ThreeVector trigger_1_position = G4ThreeVector(0, 0, pos_scint1);
+  G4ThreeVector trigger_2_position = G4ThreeVector(0, 0, pos_scint2);
 
   G4LogicalVolume* Plastic_LogicalVolume =                         
     new G4LogicalVolume(PlasticShape,             //its solid
@@ -165,7 +158,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                         "Plastic Scintillator");  //its name
                
   new G4PVPlacement(0,                       //no rotation
-                    trigger_1,               //at position
+                    trigger_1_position,      //at position
                     Plastic_LogicalVolume,   //its logical volume
                     "Plastic Scintillator",  //its name
                     logicEnv,                //its mother volume
@@ -174,7 +167,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     checkOverlaps);          //overlaps checking
 
   new G4PVPlacement(0,                       //no rotation
-                    trigger_2,               //at position
+                    trigger_2_position,      //at position
                     Plastic_LogicalVolume,   //its logical volume
                     "Plastic Scintillator",  //its name
                     logicEnv,                //its mother volume
