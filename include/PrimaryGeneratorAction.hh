@@ -46,18 +46,28 @@ class G4Box;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    PrimaryGeneratorAction();    
+    PrimaryGeneratorAction();   
     virtual ~PrimaryGeneratorAction();
 
     // method from the base class
     virtual void GeneratePrimaries(G4Event*);         
-  
+    /*
+    // getters for randomic angles
+    const G4double& Theta() const { return theta_; }
+    const G4double& Phi() const { return phi_; }
+
+    // setters fot randomic angles
+    void setTheta(const G4double& theta){ theta_ = theta; }
+    void setPhi(const G4double& phi){ phi_ = phi; }
+    */
     // method to access particle gun
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
   
   private:
-    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
+    G4ParticleGun* fParticleGun; // pointer a to G4 gun class
     G4Box* fEnvelopeBox;
+    //G4double theta_;
+    //G4double phi_;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

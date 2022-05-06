@@ -10,7 +10,7 @@
 // *                                                                  *
 // * Neither the authors of this software system, nor their employing *
 // * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
+// * work  make  any representation or warranty, express or implied, *
 // * regarding  this  software system or assume any liability for its *
 // * use.  Please see the license in the file  LICENSE  and URL above *
 // * for the full disclaimer and the limitation of liability.         *
@@ -43,15 +43,6 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-// Muons at sea level have pdf of azimuthal angle proportional to cos(theta)^2.
-G4ThreeVector AngularVectorGenerator(){
-  G4double Phi = G4UniformRand()*2*M_PI;
-  G4double Theta = G4UniformRand()*(M_PI/10);
-  return G4ThreeVector(sin(Theta)*cos(Phi), sin(Theta)*sin(Phi), cos(Theta));
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0), 
@@ -59,15 +50,28 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
+  /*
+  // generates radnomic angles
+  G4double theta = acos(pow(G4UniformRand(),1./3));
+  G4double phi = G4UniformRand() * 2 * M_PI;
+  this->setTheta(theta);
+  this->setPhi(phi);
 
+  G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeBox->GetZHalfLength());
+  Direction_Beam->rotateY(theta);
+  Direction_Beam->rotateZ(phi);
+  */
   // default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
-  G4ParticleDefinition* particle
-    = particleTable->FindParticle(particleName="mu-");
+  G4ParticleDefinition* particle = particleTable->FindParticle(particleName="mu-");
   fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,-1.,0.));
+  //fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(3.*GeV);
+
+  //delete Direction_Beam;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -88,9 +92,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // on DetectorConstruction class we get Envelope volume
   // from G4LogicalVolumeStore.
   
-  G4double envSizeX = 0;
-  G4double envSizeY = 0;
-  G4double envSizeZ = 0;
+  G4double envSizeR = 0;
 
   if (!fEnvelopeBox)
   {
@@ -100,37 +102,46 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   if ( fEnvelopeBox ) {
-    envSizeX = fEnvelopeBox->GetXHalfLength()*2.;
-    envSizeY = fEnvelopeBox->GetYHalfLength()*2.;
-    envSizeZ = fEnvelopeBox->GetZHalfLength()*2.;
-  }  
-  else  {
+    envSizeR = fEnvelopeBox->GetZHalfLength()*2.;
+  }
+  else {
     G4ExceptionDescription msg;
-    msg << "Envelope volume of box shape not found.\n"; 
+    msg << "Envelope volume of box shape not found.\n";
     msg << "Perhaps you have changed geometry.\n";
     msg << "The gun will be place at the center.";
     G4Exception("PrimaryGeneratorAction::GeneratePrimaries()",
      "MyCode0002",JustWarning,msg);
   }
-
-  
-  // Uniform distribution in the envelop volume
   /*
-  G4double size = 0.8; 
-  G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
-  G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-  G4double z0 = -0.5 * envSizeZ;
-  */
+  //
+  // x and y generator
+  //
+  G4double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeBox->GetZHalfLength();
+  G4double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeBox->GetZHalfLength();
   
-  // Uniform distribution in the BGO crystal
-  G4double x0 = (G4UniformRand() - 0.5) * 18*cm;
-  G4double y0 = +0.5 * envSizeY;
-  G4double z0 = (G4UniformRand() - 0.5) * 2.2*cm;
+  // METODO LAVI/EDO
+  
+  G4double px = cos(this->Theta()) * cos(this->Phi()) * position_x - sin(this->Phi()) * position_y + sin(this->Theta()) * cos(this->Phi()) * fEnvelopeBox->GetZHalfLength();
+  G4double py = cos(this->Theta()) * sin(this->Phi()) * position_x + cos(this->Phi()) * position_y + sin(this->Theta()) * sin(this->Phi()) * fEnvelopeBox->GetZHalfLength();
+  G4double pz = -sin(this->Theta()) * position_x + cos(this->Theta()) * fEnvelopeBox->GetZHalfLength();
+  
+  
+  // METODO EMA/FEDE
+  G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, fEnvelopeBox->GetZHalfLength());
+  Position_Beam->rotateY(this->Theta());
+  Position_Beam->rotateZ(this->Phi());
+  
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  // METODO EMA/FEDE
+  fParticleGun->SetParticlePosition(*Position_Beam);
+  delete Position_Beam;
+  // METODO LAVI/EDO
+  //fParticleGun->SetParticlePosition(G4ThreeVector(px,py,pz));
+  */
+
+  fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-50*cm));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
