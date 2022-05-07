@@ -110,6 +110,7 @@
 
 # "Envelope" is transparent blue to represent air
 /vis/geometry/set/colour Envelope 0 1 1 1 .2
+# s=surface, w=wireframe, c=cloud
 /vis/viewer/set/style surface
 /vis/viewer/set/hiddenMarker true
 /vis/viewer/set/viewpointThetaPhi 60 160
