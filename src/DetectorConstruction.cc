@@ -75,7 +75,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   //
   G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
   
-  G4Sphere* solidWorld = new G4Sphere("World", 0, 3*radius_sphere, 0.*deg, 360.*deg, 0.*deg, 180.*deg);
+  G4Sphere* solidWorld = new G4Sphere("World", 0, sqrt(3)*radius_sphere, 0.*deg, 360.*deg, 0.*deg, 180.*deg);
       
   G4LogicalVolume* logicWorld =                         
     new G4LogicalVolume(solidWorld,          //its solid
