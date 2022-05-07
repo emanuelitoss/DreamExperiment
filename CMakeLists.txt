@@ -49,7 +49,7 @@ set(DREAM_SCRIPTS
   init_vis.mac
   run1.mac
   run2.mac
-  vis.mac
+  visualize.mac
   )
 
 foreach(_script ${DREAM_SCRIPTS})

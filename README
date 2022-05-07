@@ -101,10 +101,10 @@
    The visualization manager is set via the G4VisExecutive class
    in the main() function in exampleB1.cc.    
    The initialisation of the drawing is done via a set of /vis/ commands
-   in the macro vis.mac. This macro is automatically read from
+   in the macro visualize.mac. This macro is automatically read from
    the main function when the example is used in interactive running mode.
 
-   By default, vis.mac opens an OpenGL viewer (/vis/open OGL).
+   By default, visualize.mac opens an OpenGL viewer (/vis/open OGL).
    The user can change the initial viewer by commenting out this line
    and instead uncommenting one of the other /vis/open statements, such as
    HepRepFile or DAWNFILE (which produce files that can be viewed with the
@@ -124,7 +124,7 @@
    (since they require no external libraries), but the OGL driver requires
    that the Geant4 libraries have been built with the OpenGL option.
 
-   From Release 9.6 the vis.mac macro in example B1 has additional commands
+   From Release 9.6 the visualize.mac macro in example B1 has additional commands
    that demonstrate additional functionality of the vis system, such as
    displaying text, axes, scales, date, logo and shows how to change
    viewpoint and style.  Consider copying these to other examples or
