@@ -33,29 +33,21 @@
 #include "../include/EventAction.hh"
 #include "../include/SteppingAction.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 ActionInitialization::ActionInitialization()
  : G4VUserActionInitialization()
 {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+ActionInitialization::~ActionInitialization(){}
 
-ActionInitialization::~ActionInitialization()
-{}
+void ActionInitialization::BuildForMaster() const {
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void ActionInitialization::BuildForMaster() const
-{
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
+
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void ActionInitialization::Build() const {
 
-void ActionInitialization::Build() const
-{
   SetUserAction(new PrimaryGeneratorAction);
 
   RunAction* runAction = new RunAction;
@@ -65,6 +57,5 @@ void ActionInitialization::Build() const
   SetUserAction(eventAction);
   
   SetUserAction(new SteppingAction(eventAction));
-}  
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+}

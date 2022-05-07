@@ -45,7 +45,7 @@ DetectorConstruction::DetectorConstruction()
   fScoringVolume(0)
 { }
 
-DetectorConstruction::~DetectorConstruction(){ }
+DetectorConstruction::~DetectorConstruction(){}
 
 G4VPhysicalVolume* DetectorConstruction::Construct(){
 
@@ -182,5 +182,3 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   //
   return physWorld;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -63,6 +63,4 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4Sphere* fEnvelopeSphere;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif

@@ -40,8 +40,6 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 RunAction::RunAction()
 : G4UserRunAction(),
   fEdep(0.),
@@ -65,12 +63,7 @@ RunAction::RunAction()
   accumulableManager->RegisterAccumulable(fEdep2); 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-RunAction::~RunAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+RunAction::~RunAction(){}
 
 void RunAction::BeginOfRunAction(const G4Run*)
 { 
@@ -83,10 +76,8 @@ void RunAction::BeginOfRunAction(const G4Run*)
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void RunAction::EndOfRunAction(const G4Run* run){
 
-void RunAction::EndOfRunAction(const G4Run* run)
-{
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
 
@@ -150,14 +141,9 @@ void RunAction::EndOfRunAction(const G4Run* run)
      << G4endl;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void RunAction::AddEdep(G4double edep){
 
-void RunAction::AddEdep(G4double edep)
-{
   fEdep  += edep;
   fEdep2 += edep*edep;
+
 }
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

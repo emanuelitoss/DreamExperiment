@@ -44,8 +44,6 @@ class ActionInitialization : public G4VUserActionInitialization
     virtual void Build() const;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
 
     

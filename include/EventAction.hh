@@ -36,7 +36,6 @@
 class RunAction;
 
 /// Event action class
-///
 
 class EventAction : public G4UserEventAction
 {
@@ -53,8 +52,6 @@ class EventAction : public G4UserEventAction
     RunAction* fRunAction;
     G4double     fEdep;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 

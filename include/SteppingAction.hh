@@ -54,6 +54,4 @@ class SteppingAction : public G4UserSteppingAction
     G4LogicalVolume* fScoringVolume;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
