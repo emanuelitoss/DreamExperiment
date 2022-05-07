@@ -63,7 +63,7 @@
 /vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
 # To select or override default colours (note: e+ is blue by default):
 # /vis/modeling/trajectories/list
-/vis/modeling/trajectories/drawByParticleID-0/set mu- white
+/vis/modeling/trajectories/drawByParticleID-0/set mu- cyan
 /vis/modeling/trajectories/drawByParticleID-0/set e- red
 /vis/modeling/trajectories/drawByParticleID-0/set gamma yellow
 
@@ -83,7 +83,7 @@
 
 # Axes, scale, etc.
 # /vis/scene/add/scale   # Simple scale line
-# in (0,0,0), of length 40cm, blue, without text
+# in (0,0,0), of length 30cm, blue, without text
 /vis/scene/add/axes 0 0 0 40 cm blue false
 /vis/scene/add/eventID   # Drawn at end of event
 # /vis/scene/add/date    # Date stamp
@@ -113,7 +113,8 @@
 # s=surface, w=wireframe, c=cloud
 /vis/viewer/set/style surface
 /vis/viewer/set/hiddenMarker true
-/vis/viewer/set/viewpointThetaPhi 60 160
+/vis/viewer/set/viewpointThetaPhi 50 160
+/vis/viewer/zoom 1.5
 
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
