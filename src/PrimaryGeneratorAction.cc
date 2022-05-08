@@ -87,12 +87,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
      "MyCode0002",JustWarning,msg);
   }
 
-  ParticleKinematicGenerator();
+  ParticleKinematicsGenerator();
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
-void PrimaryGeneratorAction::ParticleKinematicGenerator(){
+void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
 
   // this function sets kinematic and specifics of the incoming ray
 
@@ -106,6 +106,11 @@ void PrimaryGeneratorAction::ParticleKinematicGenerator(){
   // generation of radnomic angles
   G4double theta = acos(pow(G4UniformRand(),1./3));
   G4double phi = G4UniformRand() * 2 * M_PI;
+
+  // print (to check right behaviour)
+  std::cout << "\nRANDOMIC ANGLES:\n"
+   << "Theta: " << theta*180/M_PI << " deg,\tcos(Theta) = " << cos(theta) << ",\tsin(Theta) = " << sin(theta) 
+   << "\n" << "Phi: " << phi*180/M_PI << " deg,\tcos(Phi) = " << cos(phi) << ",\tsin(Phi) = " << sin(phi) << std::endl;
   
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
@@ -116,7 +121,7 @@ void PrimaryGeneratorAction::ParticleKinematicGenerator(){
   // tangent plane position generation
   G4double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
   G4double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
-  
+
   /*
   // METODO LAVI/EDO
   G4double px = cos(this->Theta()) * cos(this->Phi()) * position_x - sin(this->Phi()) * position_y + sin(this->Theta()) * cos(this->Phi()) * fEnvelopeBox->GetZHalfLength();
@@ -126,10 +131,22 @@ void PrimaryGeneratorAction::ParticleKinematicGenerator(){
   
   // METODO EMA/FEDE
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
-  Position_Beam->rotateY(theta);
-  Position_Beam->rotateZ(phi);
   
-  // Setting position of the particle
+  std::cout << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
+
+  Position_Beam->rotateY(theta);
+
+  std::cout << "Vector After \'rotateY()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
+
+  Position_Beam->rotateZ(phi);
+
+  std::cout << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
+  
+  // Set position of the particle
+
   // METODO EMA/FEDE
   fParticleGun->SetParticlePosition(*Position_Beam);
   delete Position_Beam;
@@ -139,6 +156,6 @@ void PrimaryGeneratorAction::ParticleKinematicGenerator(){
   //fParticleGun->SetParticlePosition(G4ThreeVector(px,py,pz));
 
   // porto sicuro
-  //fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-envSizeR));
+  //fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
 
 }

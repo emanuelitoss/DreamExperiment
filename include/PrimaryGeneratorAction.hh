@@ -53,7 +53,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     virtual void GeneratePrimaries(G4Event*);
     
     // generator of particle kinematic
-    void ParticleKinematicGenerator();
+    void ParticleKinematicsGenerator();
 
     // method to access particle gun
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
