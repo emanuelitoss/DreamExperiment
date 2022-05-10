@@ -1,5 +1,34 @@
 TO DO LIST
-(V) Distribuzione angolare dei muoni entranti
+
+----- Progettazione dell'esperimento -----
+
+(V) Modifica della geometria del detector
+
+----- Simulazione -----
+
+(V) Distribuzione angolare dei muoni entranti:
+	(V) Minimizzare il raggio dell'envelope attorno al detector
+	(V) Applicare metodo del piano tangente
+	(X) Fare un check del fatto che le rotazioni siano corrette
+
+(X) Inserire una physicsList adatta al nostro esperimento - vedere altri esempi
+	>> deve includere Cherenkov
+	>> deve essere adatto alle nostre energie
+	>> deve contenere tutti i processi che sono rilevanti nel nostro caso (Cherenkov, scintillazione, bremsstrahlung, scattering vari..)
+
+----- Analisi dati -----
+
+(X) Estrazione dei dati
+	(X) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale
+	(X) n-tupla che contiene posizione e direzione del muore generato
+	(X) n-tupla delle energie perse nei tre rivelatori (fare il check che la particella sia nel rivelatore)
+		>> variabile G4Event con un metodo che incrementa una delle tre variabili a seconda del rivelatore in cui si trova
+		>> usare qualcosa del tipo AddEdep(indice del volume)
+	(X) raccolta di informazioni ad ogni step
+
+(X) Ricostruire le quantità del laboratorio -> così è molto generico, ce ne occuperemo dopo 
+
+----- successive (?) -----
+
 (X) Distribuzione in energia dei muoni
-(X) Estrazione dell'energia persa e plot (o della carica)
 (X) Inserire fotomoltiplicatori alle estremità del BGO
