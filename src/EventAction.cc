@@ -44,12 +44,31 @@ EventAction::~EventAction(){}
 void EventAction::BeginOfEventAction(const G4Event*){
 
   fEdep = 0.;
+  fEdep_BGO = 0.;
+  fEdep_PMT1 = 0.;
+  fEdep_PMT2 = 0.;
 
 }
 
 void EventAction::EndOfEventAction(const G4Event*){
-
   // accumulate statistics in run action
   fRunAction->AddEdep(fEdep);
+}
 
+void EventAction::AddEdep(G4double edep){
+  fEdep += edep;
+  std::cout << "ENERGIA TOTALE: " << fEdep << std::endl;
+}
+
+void EventAction::AddEdepBGO(G4double edep){
+  fEdep_BGO += edep;
+  std::cout << "ENERGIA NEL BGO: " << fEdep_BGO << std::endl;
+}
+
+void EventAction::AddEdepPMT1(G4double edep){
+  fEdep_PMT1 += edep;
+}
+
+void EventAction::AddEdepPMT2(G4double edep){
+  fEdep_PMT2 += edep;
 }
