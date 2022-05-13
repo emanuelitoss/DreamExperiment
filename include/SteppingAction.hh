@@ -33,6 +33,9 @@
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
 
+#include <fstream>
+using namespace std;
+
 class EventAction;
 
 class G4LogicalVolume;
