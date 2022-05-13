@@ -136,10 +136,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   std::cout << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
   << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
   
-
-  ostream* reference = (this->getOutput());
-	// print informations
-	*reference << "ciao" << endl;
+	/*(this->getOutput()) << "ciao" << endl;
   /*"\nx \t\t y \t\t theta \t\t phi \t\t dir x \t\t dir y \t\t dir z \t\t pos x \t\t pos y \t\t pos z\n" <<
 	position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
   Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
