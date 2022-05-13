@@ -33,6 +33,9 @@
 #include "../include/EventAction.hh"
 #include "../include/SteppingAction.hh"
 
+#include <fstream>
+using namespace std;
+
 ActionInitialization::ActionInitialization()
  : G4VUserActionInitialization()
 {}
@@ -48,7 +51,11 @@ void ActionInitialization::BuildForMaster() const {
 
 void ActionInitialization::Build() const {
 
-  SetUserAction(new PrimaryGeneratorAction);
+  //Open file
+	ofstream* outfile = new ofstream("../positions.txt");
+	//outfile->open("../positions.txt");
+
+  SetUserAction(new PrimaryGeneratorAction(outfile));
 
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
@@ -57,5 +64,8 @@ void ActionInitialization::Build() const {
   SetUserAction(eventAction);
   
   SetUserAction(new SteppingAction(eventAction));
+
+  outfile->close();
+  delete outfile;
 
 }
