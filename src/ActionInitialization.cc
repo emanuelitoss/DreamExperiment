@@ -52,8 +52,8 @@ void ActionInitialization::BuildForMaster() const {
 void ActionInitialization::Build() const {
 
   //Open file
-	ofstream* outfile = new ofstream("../positions.txt");
-	//outfile->open("../positions.txt");
+	ofstream* outfile = new ofstream();
+	outfile->open("../positions.txt");
 
   SetUserAction(new PrimaryGeneratorAction(outfile));
 
@@ -66,6 +66,5 @@ void ActionInitialization::Build() const {
   SetUserAction(new SteppingAction(eventAction));
 
   outfile->close();
-  delete outfile;
 
 }
