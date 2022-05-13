@@ -10,7 +10,7 @@
 // *                                                                  *
 // * Neither the authors of this software system, nor their employing *
 // * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or warranty, express or implied, *
+// * work  make  any representation or  warranty, express or implied, *
 // * regarding  this  software system or assume any liability for its *
 // * use.  Please see the license in the file  LICENSE  and URL above *
 // * for the full disclaimer and the limitation of liability.         *
@@ -24,12 +24,15 @@
 // ********************************************************************
 //
 //
-/// \file PrimaryGeneratorAction.cc
-/// \brief Implementation of the PrimaryGeneratorAction class
+/// \file B1PrimaryGeneratorAction.cc
+/// \brief Implementation of the B1PrimaryGeneratorAction class
 
 #include "../include/PrimaryGeneratorAction.hh"
 
 #include <cmath>
+#include <fstream>
+#include <iostream>
+using namespace std;
 
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
@@ -43,14 +46,14 @@
 #include "Randomize.hh"
 
 
-PrimaryGeneratorAction::PrimaryGeneratorAction()
+PrimaryGeneratorAction::PrimaryGeneratorAction(const ofstream* outfile)
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0), 
   fEnvelopeSphere(0)
 {
+  this->setOutput(outfile);
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
-
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction(){
@@ -94,9 +97,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
 
-  // this function sets kinematic and specifics of the incoming ray
+  	// this function sets kinematic and specifics of the incoming ray
 
-  // default particle kinematic
+  	// default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle = particleTable->FindParticle(particleName="mu-");
@@ -106,11 +109,6 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // generation of radnomic angles
   G4double theta = acos(pow(G4UniformRand(),1./3));
   G4double phi = G4UniformRand() * 2 * M_PI;
-
-  // print (to check right behaviour)
-  std::cout << "\nRANDOMIC ANGLES:\n"
-   << "Theta: " << theta*180/M_PI << " deg,\tcos(Theta) = " << cos(theta) << ",\tsin(Theta) = " << sin(theta) 
-   << "\n" << "Phi: " << phi*180/M_PI << " deg,\tcos(Phi) = " << cos(phi) << ",\tsin(Phi) = " << sin(phi) << std::endl;
   
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
@@ -121,13 +119,6 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // tangent plane position generation
   G4double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
   G4double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
-
-  /*
-  // METODO LAVI/EDO
-  G4double px = cos(this->Theta()) * cos(this->Phi()) * position_x - sin(this->Phi()) * position_y + sin(this->Theta()) * cos(this->Phi()) * fEnvelopeBox->GetZHalfLength();
-  G4double py = cos(this->Theta()) * sin(this->Phi()) * position_x + cos(this->Phi()) * position_y + sin(this->Theta()) * sin(this->Phi()) * fEnvelopeBox->GetZHalfLength();
-  G4double pz = -sin(this->Theta()) * position_x + cos(this->Theta()) * fEnvelopeBox->GetZHalfLength();
-  */
   
   // METODO EMA/FEDE
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
@@ -145,17 +136,16 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   std::cout << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
   << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
   
-  // Set position of the particle
 
-  // METODO EMA/FEDE
+	// print informations
+	*(this->getOutput()) << "\nx \t\t y \t\t theta \t\t phi \t\t dir x \t\t dir y \t\t dir z \t\t pos x \t\t pos y \t\t pos z\n" <<
+	position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
+  Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
+  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() <<  endl;
+
+  // Set position of the particle
   fParticleGun->SetParticlePosition(*Position_Beam);
   delete Position_Beam;
   delete Direction_Beam;
-
-  // METODO LAVI/EDO
-  //fParticleGun->SetParticlePosition(G4ThreeVector(px,py,pz));
-
-  // porto sicuro
-  //fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
 
 }

@@ -30,6 +30,9 @@
 #ifndef PrimaryGeneratorAction_h
 #define PrimaryGeneratorAction_h 1
 
+#include <fstream>
+using namespace std;
+
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
@@ -46,11 +49,17 @@ class G4Sphere;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    PrimaryGeneratorAction();   
+    PrimaryGeneratorAction(const ofstream* output);   
     virtual ~PrimaryGeneratorAction();
 
     // method from the base class
     virtual void GeneratePrimaries(G4Event*);
+
+    //setter
+    void setOutput(const ofstream* output){ output_ = output; }
+
+    //getter
+    const ofstream* getOutput(){ return output_;}
     
     // generator of particle kinematic
     void ParticleKinematicsGenerator();
@@ -61,6 +70,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun* fParticleGun; // pointer a to G4 gun class
     G4Sphere* fEnvelopeSphere;
+    const ofstream* output_;
 };
 
 #endif
