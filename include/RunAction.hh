@@ -30,6 +30,9 @@
 #ifndef RunAction_h
 #define RunAction_h 1
 
+#include <fstream>
+using namespace std;
+
 #include "G4UserRunAction.hh"
 #include "G4Accumulable.hh"
 #include "globals.hh"
