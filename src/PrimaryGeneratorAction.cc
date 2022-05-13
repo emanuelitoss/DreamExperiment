@@ -46,7 +46,7 @@ using namespace std;
 #include "Randomize.hh"
 
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(const ofstream* outfile)
+PrimaryGeneratorAction::PrimaryGeneratorAction(ofstream* outfile)
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0), 
   fEnvelopeSphere(0)
@@ -137,11 +137,13 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
   
 
+  ostream* reference = (this->getOutput());
 	// print informations
-	*(this->getOutput()) << "\nx \t\t y \t\t theta \t\t phi \t\t dir x \t\t dir y \t\t dir z \t\t pos x \t\t pos y \t\t pos z\n" <<
+	*reference << "ciao" << endl;
+  /*"\nx \t\t y \t\t theta \t\t phi \t\t dir x \t\t dir y \t\t dir z \t\t pos x \t\t pos y \t\t pos z\n" <<
 	position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
   Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
-  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() <<  endl;
+  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() <<  endl;*/
 
   // Set position of the particle
   fParticleGun->SetParticlePosition(*Position_Beam);
