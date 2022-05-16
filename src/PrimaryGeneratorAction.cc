@@ -45,6 +45,23 @@ using namespace std;
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"      /* White */
+#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(ofstream* outfile)
 : G4VUserPrimaryGeneratorAction(),
@@ -123,24 +140,26 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // METODO EMA/FEDE
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
   
-  std::cout << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
+  std::cout << CYAN << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
 
   Position_Beam->rotateY(theta);
 
-  std::cout << "Vector After \'rotateY()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
+  std::cout << CYAN << "Vector After \'rotateY()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
 
   Position_Beam->rotateZ(phi);
 
-  std::cout << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << std::endl;
+  std::cout << CYAN << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
   
-	//(this->getOutput()) << "ciao" << endl;
-  /* "\nx \t\t y \t\t theta \t\t phi \t\t dir x \t\t dir y \t\t dir z \t\t pos x \t\t pos y \t\t pos z\n" <<
-	position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
+  // writing in output file
+  output_->open("../positions.txt", ios::app);
+  if(!(*output_)) cout << BOLDRED << "ERROR: Could not open the file" << RESET << endl;
+  *output_ << position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
   Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
-  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << endl; */
+  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << endl;
+  output_->close();
 
   // Set position of the particle
   fParticleGun->SetParticlePosition(*Position_Beam);

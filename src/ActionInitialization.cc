@@ -34,6 +34,7 @@
 #include "../include/SteppingAction.hh"
 
 #include <fstream>
+#include <iostream>
 using namespace std;
 
 ActionInitialization::ActionInitialization()
@@ -54,6 +55,10 @@ void ActionInitialization::Build() const {
   //Open file
 	ofstream* outfile = new ofstream();
 	outfile->open("../positions.txt");
+  if(!(*output_)) cout << BOLDRED << "ERROR: Could not open the file" << RESET << endl;
+  *outfile << "This file contains the generated points and directions with the tangent plane method\n"
+    << "#x\ty\ttheta\tphi\tdir_x\tdir_y\tdir_z\tpos_x\tpos_y\tpos_z\n" << endl;
+  outfile->close();
 
   SetUserAction(new PrimaryGeneratorAction(outfile));
 
@@ -64,7 +69,5 @@ void ActionInitialization::Build() const {
   SetUserAction(eventAction);
   
   SetUserAction(new SteppingAction(eventAction));
-
-  outfile->close();
 
 }
