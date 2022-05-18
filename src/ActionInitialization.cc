@@ -33,41 +33,43 @@
 #include "../include/EventAction.hh"
 #include "../include/SteppingAction.hh"
 
+#include "DetectorConstruction.hh"
+#include "G4MTRunManager.hh"
+
 #include <fstream>
 #include <iostream>
 using namespace std;
 
-ActionInitialization::ActionInitialization()
- : G4VUserActionInitialization()
+ActionInitialization::ActionInitialization(DetectorConstruction* detConstruction)
+ : G4VUserActionInitialization(),
+ fDetConstruction(detConstruction)
 {}
 
 ActionInitialization::~ActionInitialization(){}
 
 void ActionInitialization::BuildForMaster() const {
-
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
-
 }
 
 void ActionInitialization::Build() const {
 
-  //Open file
-	ofstream* outfile = new ofstream();
-	outfile->open("../positions.txt");
-  if(!(*output_)) cout << BOLDRED << "ERROR: Could not open the file" << RESET << endl;
+  //Writing first line in an output file
+  G4String outputFile = "../analysisDreamSimulation/positions.txt";  ofstream* outfile = new ofstream();  outfile->open(outputFile);
+  if(!outfile) cout << BOLDRED << "ERROR: Could not open the file" << RESET << endl;
   *outfile << "This file contains the generated points and directions with the tangent plane method\n"
     << "#x\ty\ttheta\tphi\tdir_x\tdir_y\tdir_z\tpos_x\tpos_y\tpos_z\n" << endl;
   outfile->close();
 
-  SetUserAction(new PrimaryGeneratorAction(outfile));
+  SetUserAction(new PrimaryGeneratorAction(outputFile));
 
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
-  
+
   EventAction* eventAction = new EventAction(runAction);
   SetUserAction(eventAction);
-  
-  SetUserAction(new SteppingAction(eventAction));
+
+  SetUserAction(new SteppingAction(eventAction, fDetConstruction));
 
 }
+

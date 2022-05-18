@@ -32,18 +32,18 @@
 
 #include "G4VUserActionInitialization.hh"
 
-/// Action initialization class.
+class DetectorConstruction;
 
+/// Action initialization class
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    ActionInitialization();
+    ActionInitialization(DetectorConstruction*);
     virtual ~ActionInitialization();
-
     virtual void BuildForMaster() const;
     virtual void Build() const;
+  private:
+    DetectorConstruction* fDetConstruction = nullptr;
 };
 
 #endif
-
-    
