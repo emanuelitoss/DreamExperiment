@@ -37,29 +37,42 @@ using namespace std;
 #include "G4ParticleGun.hh"
 #include "globals.hh"
 
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"      /* White */
+#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+
 class G4ParticleGun;
 class G4Event;
 class G4Sphere;
 
-/// The primary generator action class with particle gun.
-///
-/// The default kinematic is a 6 MeV gamma, randomly distribued 
-/// in front of the phantom across 80% of the (X,Y) phantom size.
-
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    PrimaryGeneratorAction(ofstream* output);   
+    PrimaryGeneratorAction(G4String fileName);   
     virtual ~PrimaryGeneratorAction();
 
     // method from the base class
     virtual void GeneratePrimaries(G4Event*);
 
     //setter
-    void setOutput(ofstream* output){ output_ = output; }
+    void setOutput(G4String aString){ fileName = aString; }
 
     //getter
-    ofstream* getOutput(){ return output_;}
+    G4String getOutput(){ return fileName;}
     
     // generator of particle kinematic
     void ParticleKinematicsGenerator();
@@ -70,7 +83,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun* fParticleGun; // pointer a to G4 gun class
     G4Sphere* fEnvelopeSphere;
-    ofstream* output_;
+    G4String fileName;
 };
 
 #endif
