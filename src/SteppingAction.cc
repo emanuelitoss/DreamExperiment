@@ -79,7 +79,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   
   if ( physicalVolume == fDetConstruction->GetPlasticScintillator_1() ) {
     runData->Add(kScint1, edepStep);
-    fEventAction->AddEdepPMT1(edepStep)
+    fEventAction->AddEdepPMT1(edepStep);
   }
 
   if ( physicalVolume == fDetConstruction->GetPlasticScintillator_2() ) {
