@@ -29,6 +29,7 @@
 
 #include "include/DetectorConstruction.hh"
 #include "include/ActionInitialization.hh"
+#include "include/RunData.hh"
 
 #include "G4RunManagerFactory.hh"
 
@@ -54,8 +55,7 @@ int main(int argc,char** argv)
   
   // Construct the default run manager
   //
-  auto* runManager =
-    G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
+  auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
   // Set mandatory initialization classes
   //
@@ -68,7 +68,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
-  runManager->SetUserInitialization(new ActionInitialization());
+  runManager->SetUserInitialization(new ActionInitialization(new DetectorConstruction()));
   
   // Initialize visualization
   //
