@@ -119,9 +119,9 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   G4double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
   G4double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
   
-  // METODO EMA/FEDE
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
   
+  // a little check that the rotations are well done
   std::cout << CYAN << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
   << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
 
@@ -144,7 +144,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << endl;
   output->close();
 
-  // Set position of the particle
+  // set position of the particle
   fParticleGun->SetParticlePosition(*Position_Beam);
 
   delete output;
