@@ -44,7 +44,7 @@ SteppingAction::SteppingAction(EventAction* eventAction, const DetectorConstruct
   fDetConstruction(detConstruction)
 {}
 
-  SteppingAction::~SteppingAction(){}
+SteppingAction::~SteppingAction(){}
 
 void SteppingAction::UserSteppingAction(const G4Step* step){
 
