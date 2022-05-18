@@ -42,6 +42,9 @@
 
 DetectorConstruction::DetectorConstruction()
 : G4VUserDetectorConstruction(),
+  fBGOcrystal(nullptr),
+  fPlasticScintillator_1(nullptr),
+  fPlasticScintillator_2(nullptr),
   fScoringVolume(0)
 { }
 
@@ -110,8 +113,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-
-
+  
   //     
   // BGO Crystal bgo_material
   //  
@@ -119,7 +121,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   G4double pos_BGO = minimal_radius - 2 * shape_plasticZ - distance_BGOscintillators - distance_scintillators - shape_bgoXZ / 2;
   G4Material* bgo_material = nist->FindOrBuildMaterial("G4_BGO");
   G4ThreeVector bgo_position = G4ThreeVector(0, 0, pos_BGO);
-  
         
   // BGO shape
   G4Box* BGOShape = new G4Box("BGO Box", 0.5*shape_bgoXZ, 0.5*shape_bgoY, 0.5*shape_bgoXZ);
@@ -129,7 +130,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                         bgo_material,        //its material
                         "BGO Crystal");      //its name
                
-  new G4PVPlacement(0,                       //no rotation
+  fBGOcrystal = new G4PVPlacement(0,                       //no rotation
                     bgo_position,            //at position
                     BGO_LogicalVolume,       //its logical volume
                     "BGO Crystal",           //its name
@@ -157,7 +158,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                         plastic_material,         //its material
                         "Plastic Scintillator");  //its name
                
-  new G4PVPlacement(0,                       //no rotation
+  fPlasticScintillator_1 = new G4PVPlacement(0,                       //no rotation
                     trigger_1_position,      //at position
                     Plastic_LogicalVolume,   //its logical volume
                     "Plastic Scintillator",  //its name
@@ -166,7 +167,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
-  new G4PVPlacement(0,                       //no rotation
+  fPlasticScintillator_2 = new G4PVPlacement(0,                       //no rotation
                     trigger_2_position,      //at position
                     Plastic_LogicalVolume,   //its logical volume
                     "Plastic Scintillator",  //its name
