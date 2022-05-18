@@ -33,33 +33,37 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 
+
 class RunAction;
 
 /// Event action class
-
 class EventAction : public G4UserEventAction
 {
+
   public:
+
     EventAction(RunAction* runAction);
     virtual ~EventAction();
-
+    
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
-
-
+    
     void AddEdep(G4double edep);
     void AddEdepBGO(G4double edep);
     void AddEdepPMT1(G4double edep);
     void AddEdepPMT2(G4double edep);
 
   private:
+
     RunAction* fRunAction;
     G4double fEdep;
     G4double fEdep_BGO;
     G4double fEdep_PMT1;
     G4double fEdep_PMT2;
+
+    // private method
+    void PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const;
+
 };
 
 #endif
-
-    
