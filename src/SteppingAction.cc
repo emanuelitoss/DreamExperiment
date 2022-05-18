@@ -30,22 +30,24 @@
 #include "../include/SteppingAction.hh"
 #include "../include/EventAction.hh"
 #include "../include/DetectorConstruction.hh"
+#include "../include/RunData.hh"
 
 #include "G4Step.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
 
-SteppingAction::SteppingAction(EventAction* eventAction)
+SteppingAction::SteppingAction(EventAction* eventAction, const DetectorConstruction* detConstruction)
 : G4UserSteppingAction(),
   fEventAction(eventAction),
-  fScoringVolume(0)
+  fScoringVolume(0),
+  fDetConstruction(detConstruction)
 {}
 
-SteppingAction::~SteppingAction(){}
+  SteppingAction::~SteppingAction(){}
 
-void SteppingAction::UserSteppingAction(const G4Step* step)
-{
+void SteppingAction::UserSteppingAction(const G4Step* step){
+
   if (!fScoringVolume) { 
     const DetectorConstruction* detectorConstruction
       = static_cast<const DetectorConstruction*>
@@ -53,18 +55,36 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     fScoringVolume = detectorConstruction->GetScoringVolume();   
   }
 
+  // get global volume
+  // auto global_volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   // get volume of the current step
   G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
+  G4VPhysicalVolume* physicalVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
 
   // check if we are in scoring volume
   if (volume != fScoringVolume) return;
 
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
+  
   fEventAction->AddEdep(edepStep);
 
-  if (volume == fScoringVolume) {
+  auto runData = static_cast<RunData*>
+    (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+
+  if ( physicalVolume == fDetConstruction->GetBGOcrystal() ) {
+    runData->Add(kBGO, edepStep);
     fEventAction->AddEdepBGO(edepStep);
+  }
+  
+  if ( physicalVolume == fDetConstruction->GetPlasticScintillator_1() ) {
+    runData->Add(kScint1, edepStep);
+    fEventAction->AddEdepPMT1(edepStep)
+  }
+
+  if ( physicalVolume == fDetConstruction->GetPlasticScintillator_2() ) {
+    runData->Add(kScint2, edepStep);
+    fEventAction->AddEdepPMT2(edepStep);
   }
 
 }

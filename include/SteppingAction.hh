@@ -32,21 +32,20 @@
 
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
+#include "DetectorConstruction.hh"
 
 #include <fstream>
 using namespace std;
 
+class DetectorConstruction;
+class G4LogicalVolume;
 class EventAction;
 
-class G4LogicalVolume;
-
 /// Stepping action class
-/// 
+class SteppingAction : public G4UserSteppingAction{
 
-class SteppingAction : public G4UserSteppingAction
-{
   public:
-    SteppingAction(EventAction* eventAction);
+    SteppingAction(EventAction* eventAction, const DetectorConstruction* detConstruction);
     virtual ~SteppingAction();
 
     // method from the base class
@@ -55,6 +54,8 @@ class SteppingAction : public G4UserSteppingAction
   private:
     EventAction*  fEventAction;
     G4LogicalVolume* fScoringVolume;
+    const DetectorConstruction* fDetConstruction = nullptr;
+
 };
 
 #endif
