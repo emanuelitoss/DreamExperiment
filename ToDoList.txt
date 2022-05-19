@@ -9,7 +9,7 @@ TO DO LIST
 (V) Distribuzione angolare dei muoni entranti:
 	(V) Minimizzare il raggio dell'envelope attorno al detector
 	(V) Applicare metodo del piano tangente
-	(X) Fare un check del fatto che le rotazioni siano corrette
+	(V) Fare un check del fatto che le rotazioni siano corrette
 
 (X) Inserire una physicsList adatta al nostro esperimento - vedere altri esempi
 	>> deve includere Cherenkov
@@ -20,11 +20,11 @@ TO DO LIST
 
 (X) Estrazione dei dati
 	(X) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale
-	(X) n-tupla che contiene posizione e direzione del muore generato
-	(X) n-tupla delle energie perse nei tre rivelatori (fare il check che la particella sia nel rivelatore)
+	(V) n-tupla che contiene posizione e direzione del muore generato
+	(V) n-tupla delle energie perse nei tre rivelatori (fare il check che la particella sia nel rivelatore)
 		>> variabile G4Event con un metodo che incrementa una delle tre variabili a seconda del rivelatore in cui si trova
 		>> usare qualcosa del tipo AddEdep(indice del volume)
-	(X) raccolta di informazioni ad ogni step
+	(V) raccolta di informazioni ad ogni step
 
 (X) Ricostruire le quantità del laboratorio -> così è molto generico, ce ne occuperemo dopo 
 
