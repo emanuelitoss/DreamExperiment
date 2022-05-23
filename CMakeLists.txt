@@ -49,6 +49,7 @@ set(DREAM_SCRIPTS
   init_vis.mac
   run1.mac
   run2.mac
+  run3.mac
   visualize.mac
   )
 
