@@ -35,6 +35,7 @@
 
 #include "G4UImanager.hh"
 #include "QBBC.hh"
+#include "FTFP_BERT.hh"
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
@@ -60,15 +61,18 @@ int main(int argc,char** argv)
   // Set mandatory initialization classes
   //
   // Detector construction
-  runManager->SetUserInitialization(new DetectorConstruction());
+  auto detConstruction = new DetectorConstruction();
+  runManager->SetUserInitialization(detConstruction);
 
   // Physics list
-  G4VModularPhysicsList* physicsList = new QBBC;
+  // G4VModularPhysicsList* physicsList = new QBBC;
+  G4VModularPhysicsList* physicsList = new FTFP_BERT;
   physicsList->SetVerboseLevel(1);
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
-  runManager->SetUserInitialization(new ActionInitialization(new DetectorConstruction()));
+  auto actionInitialization = new ActionInitialization(detConstruction);
+  runManager->SetUserInitialization(actionInitialization);
   
   // Initialize visualization
   //
