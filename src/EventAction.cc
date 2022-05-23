@@ -38,11 +38,13 @@
 #include "Randomize.hh"
 #include <iomanip>
 
-EventAction::EventAction(RunAction* runAction)
+EventAction::EventAction(RunAction* runAction, G4String outputString)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdep(0.)
-{}
+{
+  outputFileName = outputString;
+}
 
 EventAction::~EventAction(){}
 
@@ -90,16 +92,23 @@ void EventAction::EndOfEventAction(const G4Event* event){
       runData->GetEdep(kScint1),
       runData->GetEdep(kScint2));
   }
+/*
+  ofstream* output = new ofstream();
+  output->open(outputFileName, ios::app);
+  if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
+  *output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_PMT1 << "\t" << fEdep_PMT2 << endl;
+  output->close();
+
+  delete output;
+*/
 }
 
 void EventAction::AddEdep(G4double edep){
   fEdep += edep;
-  std::cout << "ENERGIA TOTALE: " << fEdep << std::endl;
 }
 
 void EventAction::AddEdepBGO(G4double edep){
   fEdep_BGO += edep;
-  std::cout << "ENERGIA NEL BGO: " << fEdep_BGO << std::endl;
 }
 
 void EventAction::AddEdepPMT1(G4double edep){

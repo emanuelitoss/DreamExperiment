@@ -55,8 +55,10 @@ void ActionInitialization::BuildForMaster() const {
 void ActionInitialization::Build() const {
 
   //Writing first line in an output file
-  G4String outputFile = "../analysisDreamSimulation/positions.txt";  ofstream* outfile = new ofstream();  outfile->open(outputFile);
-  if(!outfile) cout << BOLDRED << "ERROR: Could not open the file" << RESET << endl;
+  G4String outputFile = "../analysisDreamSimulation/positions.txt";
+  ofstream* outfile = new ofstream();
+  outfile->open(outputFile);
+  if(!outfile) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
   *outfile << "#This file contains the generated points and directions with the tangent plane method\n"
     << "#x\ty\ttheta\tphi\tdir_x\tdir_y\tdir_z\tpos_x\tpos_y\tpos_z\n" << endl;
   outfile->close();
@@ -66,7 +68,7 @@ void ActionInitialization::Build() const {
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
 
-  EventAction* eventAction = new EventAction(runAction);
+  EventAction* eventAction = new EventAction(runAction, outputFile);
   SetUserAction(eventAction);
 
   SetUserAction(new SteppingAction(eventAction, fDetConstruction));

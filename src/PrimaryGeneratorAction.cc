@@ -51,7 +51,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4String outputName)
   fEnvelopeSphere(0)
 {
   this->setOutput(outputName);
-  G4int n_particle = 1;
+  G4int n_particle = 100;
   fParticleGun  = new G4ParticleGun(n_particle);
 }
 
@@ -106,42 +106,44 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  G4double theta = acos(pow(G4UniformRand(),1./3));
-  G4double phi = G4UniformRand() * 2 * M_PI;
+  double theta = acos(pow(G4UniformRand(),1./3));
+  double phi = G4UniformRand() * 2 * M_PI;
   
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
   fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
-
+  
   // tangent plane position generation
-  G4double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
-  G4double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
+  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
+  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
   
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
-  
+
   // a little check that the rotations are well done
-  std::cout << CYAN << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
-
+  /*
+  std::cout << OCYAN << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << ORESET << std::endl;
+  */
   Position_Beam->rotateY(theta);
-
-  std::cout << CYAN << "Vector After \'rotateY()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
-
+  /*
+  std::cout << OCYAN << "Vector After \'rotateY()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << ORESET << std::endl;
+  */
   Position_Beam->rotateZ(phi);
+  /*
+  std::cout << OCYAN << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
+  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << ORESET << std::endl;
+  */
 
-  std::cout << CYAN << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << RESET << std::endl;
-  
   // writing in output file
   ofstream* output = new ofstream();
   output->open(fileName, ios::app);
-  if(!(*output)) cout << BOLDRED << "ERROR: Could not open the file" << RESET << endl;
+  if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
   *output << setw(7) << position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
   Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
-  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << endl;
+  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << "\t" << endl;;
   output->close();
 
   // set position of the particle

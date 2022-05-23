@@ -75,9 +75,9 @@ RunAction::RunAction()
   // Note: merging ntuples is available only with Root output
 
   // Creating histograms
-  analysisManager->CreateH1("EnergyBGO","Edep in BGO crystal", 100, 0., 10*GeV);
-  analysisManager->CreateH1("EnergyTRG1","Edep in first plastic scintillator", 100, 0., 10*GeV);
-  analysisManager->CreateH1("EnergyTRG2","Edep in second plastic scintillator", 100, 0., 10*GeV);
+  analysisManager->CreateH1("EnergyBGO","Edep in BGO crystal", 1000, 0., 100, "MeV");
+  analysisManager->CreateH1("EnergyTRG1","Edep in first plastic scintillator", 1000, 0., 100*MeV);
+  analysisManager->CreateH1("EnergyTRG2","Edep in second plastic scintillator", 1000, 0., 100*MeV);
 
   // Creating ntuple
   analysisManager->CreateNtuple("dreamData", "EnengyDeposit");
@@ -139,8 +139,7 @@ void RunAction::EndOfRunAction(const G4Run* run){
   if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;  
 
   const DetectorConstruction* detectorConstruction
-   = static_cast<const DetectorConstruction*>
-    (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+   = static_cast<const DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
   G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
   G4double dose = edep/mass;
   G4double rmsDose = rms/mass;
@@ -162,7 +161,6 @@ void RunAction::EndOfRunAction(const G4Run* run){
   }
         
   // Print
-  //  
   if (IsMaster()) {
     G4cout
      << G4endl

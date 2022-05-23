@@ -31,6 +31,7 @@
 #include "../include/EventAction.hh"
 #include "../include/DetectorConstruction.hh"
 #include "../include/RunData.hh"
+#include "../include/OutputColors.hh"
 
 #include "G4Step.hh"
 #include "G4Event.hh"
@@ -61,22 +62,20 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
   G4VPhysicalVolume* physicalVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
 
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
-
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
-  
-  fEventAction->AddEdep(edepStep);
 
   auto runData = static_cast<RunData*>
     (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+
+  //std::cout << ORED << physicalVolume->GetName() << ORESET << std::endl;
+  //std::cout << OCYAN << fDetConstruction->GetBGOcrystal()->GetName() << ORESET << std::endl;
 
   if ( physicalVolume == fDetConstruction->GetBGOcrystal() ) {
     runData->Add(kBGO, edepStep);
     fEventAction->AddEdepBGO(edepStep);
   }
-  
+
   if ( physicalVolume == fDetConstruction->GetPlasticScintillator_1() ) {
     runData->Add(kScint1, edepStep);
     fEventAction->AddEdepPMT1(edepStep);
@@ -86,5 +85,10 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
     runData->Add(kScint2, edepStep);
     fEventAction->AddEdepPMT2(edepStep);
   }
+  
+  // check if we are in scoring volume
+  if (volume != fScoringVolume) return;
+
+  fEventAction->AddEdep(edepStep);
 
 }

@@ -126,18 +126,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   G4Box* BGOShape = new G4Box("BGO Box", 0.5*shape_bgoXZ, 0.5*shape_bgoY, 0.5*shape_bgoXZ);
                       
   G4LogicalVolume* BGO_LogicalVolume =                         
-    new G4LogicalVolume(BGOShape,            //its solid
-                        bgo_material,        //its material
-                        "BGO Crystal");      //its name
+    new G4LogicalVolume(BGOShape,                 //its solid
+                        bgo_material,             //its material
+                        "BGO Crystal");           //its name
                
-  fBGOcrystal = new G4PVPlacement(0,                       //no rotation
-                    bgo_position,            //at position
-                    BGO_LogicalVolume,       //its logical volume
-                    "BGO Crystal",           //its name
-                    logicEnv,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  fBGOcrystal = new G4PVPlacement(0,              //no rotation
+                    bgo_position,                 //at position
+                    BGO_LogicalVolume,            //its logical volume
+                    "BGO Crystal",                //its name
+                    logicEnv,                     //its mother volume
+                    false,                        //no boolean operation
+                    0,                            //copy number
+                    checkOverlaps);               //overlaps checking
   //     
   // Plastic scintillator
   //
@@ -154,32 +154,30 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   G4ThreeVector trigger_2_position = G4ThreeVector(0, 0, pos_scint2);
 
   G4LogicalVolume* Plastic_LogicalVolume =                         
-    new G4LogicalVolume(PlasticShape,             //its solid
-                        plastic_material,         //its material
-                        "Plastic Scintillator");  //its name
+    new G4LogicalVolume(PlasticShape,              //its solid
+                        plastic_material,          //its material
+                        "Plastic Scintillator");   //its name
                
-  fPlasticScintillator_1 = new G4PVPlacement(0,                       //no rotation
-                    trigger_1_position,      //at position
-                    Plastic_LogicalVolume,   //its logical volume
-                    "Plastic Scintillator",  //its name
-                    logicEnv,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  fPlasticScintillator_1 = new G4PVPlacement(0,    //no rotation
+                    trigger_1_position,            //at position
+                    Plastic_LogicalVolume,         //its logical volume
+                    "Plastic Scintillator",        //its name
+                    logicEnv,                      //its mother volume
+                    false,                         //no boolean operation
+                    0,                             //copy number
+                    checkOverlaps);                //overlaps checking
 
-  fPlasticScintillator_2 = new G4PVPlacement(0,                       //no rotation
-                    trigger_2_position,      //at position
-                    Plastic_LogicalVolume,   //its logical volume
-                    "Plastic Scintillator",  //its name
-                    logicEnv,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  fPlasticScintillator_2 = new G4PVPlacement(0,    //no rotation
+                    trigger_2_position,            //at position
+                    Plastic_LogicalVolume,         //its logical volume
+                    "Plastic Scintillator",        //its name
+                    logicEnv,                      //its mother volume
+                    false,                         //no boolean operation
+                    0,                             //copy number
+                    checkOverlaps);                //overlaps checking
 
   fScoringVolume = logicEnv;
 
-  //
   //always return the physical World
-  //
   return physWorld;
 }

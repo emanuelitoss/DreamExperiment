@@ -33,7 +33,9 @@
 #include "G4Run.hh"
 #include "globals.hh"
 #include "g4root.hh"
-  
+
+#include "../include/OutputColors.hh"
+
 #include <array>
 
 const G4int kBGO = 0;

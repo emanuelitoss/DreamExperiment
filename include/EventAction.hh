@@ -42,11 +42,13 @@ class EventAction : public G4UserEventAction
 
   public:
 
-    EventAction(RunAction* runAction);
+    EventAction(RunAction* runAction, G4String outString);
     virtual ~EventAction();
     
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
+
+    G4String getOutputFileName() {return outputFileName;}
     
     void AddEdep(G4double edep);
     void AddEdepBGO(G4double edep);
@@ -60,6 +62,7 @@ class EventAction : public G4UserEventAction
     G4double fEdep_BGO;
     G4double fEdep_PMT1;
     G4double fEdep_PMT2;
+    G4String outputFileName;
 
     // private method
     void PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const;

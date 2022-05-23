@@ -54,7 +54,7 @@ class SteppingAction : public G4UserSteppingAction{
   private:
     EventAction*  fEventAction;
     G4LogicalVolume* fScoringVolume;
-    const DetectorConstruction* fDetConstruction = nullptr;
+    const DetectorConstruction* fDetConstruction;
 
 };
 
