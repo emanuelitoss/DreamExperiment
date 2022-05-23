@@ -92,15 +92,15 @@ void EventAction::EndOfEventAction(const G4Event* event){
       runData->GetEdep(kScint1),
       runData->GetEdep(kScint2));
   }
-/*
+
   ofstream* output = new ofstream();
-  output->open(outputFileName, ios::app);
+  output->open("../analysisDreamSimulation/energies.txt", ios::app);
   if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
   *output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_PMT1 << "\t" << fEdep_PMT2 << endl;
   output->close();
 
   delete output;
-*/
+
 }
 
 void EventAction::AddEdep(G4double edep){
