@@ -66,6 +66,8 @@ int main(int argc,char** argv)
 
   // Physics list
   // G4VModularPhysicsList* physicsList = new QBBC;
+  // PhysicsLists avilables here:
+  // https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
   physicsList->SetVerboseLevel(1);
   runManager->SetUserInitialization(physicsList);

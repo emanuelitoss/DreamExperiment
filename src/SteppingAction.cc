@@ -77,15 +77,20 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   }
 
   if ( physicalVolume == fDetConstruction->GetPlasticScintillator_1() ) {
+    fEventAction->PassedThroughScint1();
     runData->Add(kScint1, edepStep);
-    fEventAction->AddEdepPMT1(edepStep);
+    fEventAction->AddEdepScint1(edepStep);
   }
 
   if ( physicalVolume == fDetConstruction->GetPlasticScintillator_2() ) {
+    fEventAction->PassedThroughScint2();
     runData->Add(kScint2, edepStep);
-    fEventAction->AddEdepPMT2(edepStep);
+    fEventAction->AddEdepScint2(edepStep);
   }
   
+  // useful print to check the right behaviour:
+  //fEventAction->PrintStatus();
+
   // check if we are in scoring volume
   if (volume != fScoringVolume) return;
 

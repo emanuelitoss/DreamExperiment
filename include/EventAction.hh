@@ -42,31 +42,50 @@ class EventAction : public G4UserEventAction
 
   public:
 
-    EventAction(RunAction* runAction, G4String outString);
-    virtual ~EventAction();
-    
-    virtual void BeginOfEventAction(const G4Event* event);
-    virtual void EndOfEventAction(const G4Event* event);
+  EventAction(RunAction* runAction, G4String outString);
+  virtual ~EventAction();
+  
+  virtual void BeginOfEventAction(const G4Event* event);
+  virtual void EndOfEventAction(const G4Event* event);
 
-    G4String getOutputFileName() {return outputFileName;}
-    
-    void AddEdep(G4double edep);
-    void AddEdepBGO(G4double edep);
-    void AddEdepPMT1(G4double edep);
-    void AddEdepPMT2(G4double edep);
+  G4String getOutputFileName() {return outputFileName;}
+
+  void PassedThroughScint1();
+  void PassedThroughScint2();
+
+  void AddEdep(G4double edep);
+  void AddEdepBGO(G4double edep);
+  void AddEdepScint1(G4double edep);
+  void AddEdepScint2(G4double edep);
+
+  void PrintStatus();
 
   private:
 
-    RunAction* fRunAction;
-    G4double fEdep;
-    G4double fEdep_BGO;
-    G4double fEdep_PMT1;
-    G4double fEdep_PMT2;
-    G4String outputFileName;
-
-    // private method
-    void PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const;
+  RunAction* fRunAction;
+  
+  // deposited energies in: ScoringVolume, BGO crystal and two plastic Scintillators
+  G4double fEdep;
+  G4double fEdep_BGO;
+  G4double fEdep_Scint1;
+  G4double fEdep_Scint2;
+  G4String outputFileName;
+  
+  // boolean variables to check if the particle pass thorugh physical volumes
+  G4bool IsInTrg1 = false;
+  G4bool IsInTrg2 = false;
+  
+  // private method
+  void PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const;
 
 };
+
+inline void EventAction::PassedThroughScint1(){
+  IsInTrg1 = true;
+}
+
+inline void EventAction::PassedThroughScint2(){
+  IsInTrg2 = true;
+}
 
 #endif

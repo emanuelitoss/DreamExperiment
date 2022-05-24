@@ -51,7 +51,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4String outputName)
   fEnvelopeSphere(0)
 {
   this->setOutput(outputName);
-  G4int n_particle = 100;
+  G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
 }
 
@@ -113,7 +113,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
-  fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  //fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
   
   // tangent plane position generation
   double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
@@ -147,7 +148,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   output->close();
 
   // set position of the particle
-  fParticleGun->SetParticlePosition(*Position_Beam);
+  //fParticleGun->SetParticlePosition(*Position_Beam);
+  fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
 
   delete output;
   delete Position_Beam;

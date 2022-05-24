@@ -52,7 +52,7 @@ class SteppingAction : public G4UserSteppingAction{
     virtual void UserSteppingAction(const G4Step*);
 
   private:
-    EventAction*  fEventAction;
+    EventAction* fEventAction;
     G4LogicalVolume* fScoringVolume;
     const DetectorConstruction* fDetConstruction;
 

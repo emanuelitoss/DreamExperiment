@@ -66,8 +66,11 @@ void EventAction::BeginOfEventAction(const G4Event*){
 
   fEdep = 0.;
   fEdep_BGO = 0.;
-  fEdep_PMT1 = 0.;
-  fEdep_PMT2 = 0.;
+  fEdep_Scint1 = 0.;
+  fEdep_Scint2 = 0.;
+
+  IsInTrg1 = false;
+  IsInTrg2 = false;
 
   auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
   runData->Reset();
@@ -93,13 +96,23 @@ void EventAction::EndOfEventAction(const G4Event* event){
       runData->GetEdep(kScint2));
   }
 
-  ofstream* output = new ofstream();
-  output->open("../analysisDreamSimulation/energies.txt", ios::app);
-  if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-  *output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_PMT1 << "\t" << fEdep_PMT2 << endl;
-  output->close();
+  // output printing <=> particle pass thorugh both the plastic scintillators
+  if ( IsInTrg1 && IsInTrg2 ){
 
-  delete output;
+    // output
+    ofstream* output = new ofstream();
+    // output->open(fileName, ios::app);
+    output->open("../analysisDreamSimulation/energies.txt", ios::app);
+    
+    // check the file is not open
+    if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
+    // print
+    *output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_Scint1 << "\t" << fEdep_Scint2 << endl;
+    
+    output->close();
+    delete output;
+
+  }
 
 }
 
@@ -111,10 +124,24 @@ void EventAction::AddEdepBGO(G4double edep){
   fEdep_BGO += edep;
 }
 
-void EventAction::AddEdepPMT1(G4double edep){
-  fEdep_PMT1 += edep;
+void EventAction::AddEdepScint1(G4double edep){
+  fEdep_Scint1 += edep;
 }
 
-void EventAction::AddEdepPMT2(G4double edep){
-  fEdep_PMT2 += edep;
+void EventAction::AddEdepScint2(G4double edep){
+  fEdep_Scint2 += edep;
+}
+
+
+void EventAction::PrintStatus(){
+  std::cout << OCYAN << "Status of the Event:\n"
+  << "Trigger1:\t" << IsInTrg1 << "\n"
+  << "Trigger2:\t" << IsInTrg2 << "\n"
+  << "---- Energy deposited ----" << "\n"
+  << "\tTotal:\t" << fEdep << "\n"
+  << "\tBGO:\t" << fEdep_BGO << "\n"
+  << "\tPlastic_1:\t" << fEdep_Scint1 << "\n"
+  << "\tPlastic_2:\t" << fEdep_Scint2
+  << ORESET << std::endl;
+
 }
