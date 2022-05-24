@@ -99,6 +99,9 @@ void EventAction::EndOfEventAction(const G4Event* event){
   // output printing <=> particle pass thorugh both the plastic scintillators
   if ( IsInTrg1 && IsInTrg2 ){
 
+    // adding a particle
+    fRunAction->addDetectedParticle();
+
     // output
     ofstream* output = new ofstream();
     // output->open(fileName, ios::app);

@@ -108,7 +108,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   G4cout << "### Run " << run->GetRunID() << " start." << G4endl;
   
   // inform the runManager to save random number seed
-  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  G4RunManager::GetRunManager()->SetRandomNumberStore(true);
 
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -126,6 +126,10 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   // reset accumulables to their initial values
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Reset();
+
+  // reset number of detected particles
+  detectedParticles = 0;
+
 }
 
 void RunAction::EndOfRunAction(const G4Run* run){
@@ -141,7 +145,7 @@ void RunAction::EndOfRunAction(const G4Run* run){
   G4double edep  = fEdep.GetValue();
   G4double edep2 = fEdep2.GetValue();
   
-  G4double rms = edep2 - edep*edep/nofEvents;
+  G4double rms = edep2 - edep*edep/nofEvents; // non dovrebbe essere (edep2 - edep*edep)/nofEvents ???
   if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;  
 
   const DetectorConstruction* detectorConstruction
@@ -216,6 +220,9 @@ void RunAction::EndOfRunAction(const G4Run* run){
       << G4BestUnit(analysisManager->GetH1(2)->rms(),  "Energy") << G4endl;
 
   }
+
+  // number od detected events
+  std::cout << OBOLDMAGENTA << "Number od detected events: " << detectedParticles << ORESET << std::endl;
 
   // save histograms & ntuple
   analysisManager->Write();
