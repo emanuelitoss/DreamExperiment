@@ -30,7 +30,7 @@
 #include "../include/ActionInitialization.hh"
 #include "../include/PrimaryGeneratorAction.hh"
 #include "../include/RunAction.hh"
-#include "../include/.hh"
+#include "../include/EventAction.hh"
 #include "../include/SteppingAction.hh"
 
 #include "DetectorConstruction.hh"
