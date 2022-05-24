@@ -44,6 +44,7 @@ using namespace std;
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "g4root.hh"
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(G4String outputName)
 : G4VUserPrimaryGeneratorAction(),
@@ -98,7 +99,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
 
   	// this function sets kinematic and specifics of the incoming ray
 
-  	// default particle kinematic
+  // default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle = particleTable->FindParticle(particleName="mu-");
@@ -113,7 +114,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
-  //fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  // fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
   
   // tangent plane position generation
@@ -142,13 +143,13 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   ofstream* output = new ofstream();
   output->open(fileName, ios::app);
   if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-  *output << setw(7) << position_x << "\t" << position_y << "\t" << theta << "\t" << phi << "\t" <<
+  *output << setw(7) << position_x << "\t" << position_y << "\t" << Direction_Beam->theta() << "\t" << Direction_Beam->phi()+M_PI << "\t" <<
   Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
   Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << "\t" << endl;;
   output->close();
 
   // set position of the particle
-  //fParticleGun->SetParticlePosition(*Position_Beam);
+  // fParticleGun->SetParticlePosition(*Position_Beam);
   fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
 
   delete output;
