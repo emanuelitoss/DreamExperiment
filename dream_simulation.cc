@@ -67,14 +67,15 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(detConstruction);
 
   // Physics list
-  // G4VModularPhysicsList* physicsList = new QBBC;
-  // PhysicsLists avilables here:
+  // Physics lists avilables here:
   // https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
   physicsList->SetVerboseLevel(1);
+  // including optical physics
   physicsList->ReplacePhysics(new G4EmStandardPhysics_option4());
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
   physicsList->RegisterPhysics(opticalPhysics);
+  // including physicsList
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
@@ -82,7 +83,6 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(actionInitialization);
   
   // Initialize visualization
-  //
   G4VisManager* visManager = new G4VisExecutive;
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
   // G4VisManager* visManager = new G4VisExecutive("Quiet");
@@ -92,7 +92,6 @@ int main(int argc,char** argv)
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   // Process macro or start UI session
-  //
   if ( ! ui ) { 
     // batch mode
     G4String command = "/control/execute ";
