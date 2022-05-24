@@ -59,9 +59,7 @@ class RunAction : public G4UserRunAction
     virtual void BeginOfRunAction(const G4Run*);
     virtual void EndOfRunAction(const G4Run*);
 
-    G4int NumberofDetectedParticles() { return detectedParticles; }
     void addDetectedParticle() { detectedParticles++; }
-
     void AddEdep (G4double edep);
 
   private:

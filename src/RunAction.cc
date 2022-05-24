@@ -75,9 +75,9 @@ RunAction::RunAction()
   // Note: merging ntuples is available only with Root output
 
   // Creating histograms
-  analysisManager->CreateH1("EnergyBGO","Edep in BGO crystal", 1000, 0., 100, "MeV");
-  analysisManager->CreateH1("EnergyTRG1","Edep in first plastic scintillator", 1000, 0., 100*MeV);
-  analysisManager->CreateH1("EnergyTRG2","Edep in second plastic scintillator", 1000, 0., 100*MeV);
+  analysisManager->CreateH1("EnergyBGO","Energy deposited in BGO crystal", 800, 0., 100, "MeV");
+  analysisManager->CreateH1("EnergyTRG1","Energy deposited in first plastic scintillator", 800, 0., 100*MeV);
+  analysisManager->CreateH1("EnergyTRG2","Energy deposited in second plastic scintillator", 800, 0., 100*MeV);
 
   // Creating ntuple
   analysisManager->CreateNtuple("dreamData", "EnengyDeposit");
@@ -89,7 +89,7 @@ RunAction::RunAction()
   // Register accumulable to the accumulable manager
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->RegisterAccumulable(fEdep);
-  accumulableManager->RegisterAccumulable(fEdep2); 
+  accumulableManager->RegisterAccumulable(fEdep2);
   
 }
 
