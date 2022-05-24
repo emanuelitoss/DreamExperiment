@@ -60,6 +60,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     
     // generator of particle kinematic
     void ParticleKinematicsGenerator();
+    G4double GetRandomicTheta3CosCos();
 
     // method to access particle gun
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
