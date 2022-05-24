@@ -3,4 +3,6 @@
 /control/verbose 2
 /run/verbose 2
 #
+#/run/numberOfThreads 2
+#
 /run/beamOn 5000
