@@ -12,7 +12,7 @@ TO DO LIST
 	(V) Fare un check del fatto che le rotazioni siano corrette
 	(X) Aggiustare il metodo di generazione della direzione
 
-(X) Inserire una physicsList adatta al nostro esperimento (per ora si usa FTFP_BERT)
+(V) Inserire una physicsList adatta al nostro esperimento (per ora si usa FTFP_BERT)
 	vedere in: https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
 	>> deve includere Cherenkov
 	>> deve essere adatto alle nostre energie
@@ -21,8 +21,7 @@ TO DO LIST
 ----- Analisi dati -----
 
 (X) Estrazione dei dati
-	(X) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale
-		// inserire un counter
+	(X) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale > problema
 	(V) n-tupla che contiene posizione e direzione del muore generato
 	(V) n-tupla delle energie perse nei tre rivelatori (fare il check che la particella sia nel rivelatore)
 		>> variabile G4Event con un metodo che incrementa una delle tre variabili a seconda del rivelatore in cui si trova
@@ -33,7 +32,6 @@ TO DO LIST
 (X) Comprendere il fatto che solo alle estremità del BGO si rilevano i fotoni
 (X) Distinguere Cherenkov da scintillazione
 (X) Fare un set di simulazioni con il BGO ruotato e ricavare Cerenkov/Scintillazione
-(X) 
 
 ----- optional ------
 
