@@ -48,8 +48,6 @@ class EventAction : public G4UserEventAction
   virtual void BeginOfEventAction(const G4Event* event);
   virtual void EndOfEventAction(const G4Event* event);
 
-  G4String getOutputFileName() {return outputFileName;}
-
   void PassedThroughScint1();
   void PassedThroughScint2();
 
@@ -69,7 +67,6 @@ class EventAction : public G4UserEventAction
   G4double fEdep_BGO;
   G4double fEdep_Scint1;
   G4double fEdep_Scint2;
-  G4String outputFileName;
   
   // boolean variables to check if the particle pass thorugh physical volumes
   G4bool IsInTrg1 = false;

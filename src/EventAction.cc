@@ -38,13 +38,11 @@
 #include "Randomize.hh"
 #include <iomanip>
 
-EventAction::EventAction(RunAction* runAction, G4String outputString)
+EventAction::EventAction(RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdep(0.)
-{
-  outputFileName = outputString;
-}
+{}
 
 EventAction::~EventAction(){}
 
@@ -103,17 +101,14 @@ void EventAction::EndOfEventAction(const G4Event* event){
     fRunAction->addDetectedParticle();
 
     // output
-    ofstream* output = new ofstream();
-    // output->open(fileName, ios::app);
-    output->open("../analysisDreamSimulation/energies.txt", ios::app);
+    ofstream output;
+    output.open("../analysisDreamSimulation/energies.txt", ios::app);
     
     // check the file is not open
-    if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-    // print
-    *output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_Scint1 << "\t" << fEdep_Scint2 << endl;
+    if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     
-    output->close();
-    delete output;
+    output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_Scint1 << "\t" << fEdep_Scint2 << endl;
+    output.close();
 
   }
 
