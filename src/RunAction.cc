@@ -120,7 +120,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   // initialization of output file
   ofstream output;
   output.open("../analysisDreamSimulation/energies.txt");
-  output << "#Energy losses in the three detectors (in MeV\?):" << "\n" << "# BGO\tPlastic_1\tPLastic_2" << "\n" << std::endl;
+  output << "#Energy losses in the three detectors (in MeV):" << "\n" << "# Total\tBGO\tPlastic_1\tPLastic_2" << "\n" << std::endl;
   output.close();
 
   // reset accumulables to their initial values
