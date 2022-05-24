@@ -107,19 +107,20 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  double theta = acos(pow(G4UniformRand(),1./3));
+  //double theta = acos(pow(G4UniformRand(),1./3));
+  double theta = GetRandomicTheta3CosCos();
   double phi = G4UniformRand() * 2 * M_PI;
   
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
-  // fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+  fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
   
   // tangent plane position generation
-  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
-  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
+  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.1;
+  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.1;
   
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
 
@@ -149,11 +150,22 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   output->close();
 
   // set position of the particle
-  // fParticleGun->SetParticlePosition(*Position_Beam);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
+  fParticleGun->SetParticlePosition(*Position_Beam);
+  // fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
 
   delete output;
   delete Position_Beam;
   delete Direction_Beam;
+
+}
+
+G4double PrimaryGeneratorAction::GetRandomicTheta3CosCos(){
+
+  G4double theta, sample_f;
+  do{
+    theta = M_PI*0.5*G4UniformRand();
+    sample_f = 3*G4UniformRand();
+  } while (sample_f > 3*cos(theta)*cos(theta));
+  return theta;
 
 }
