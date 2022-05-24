@@ -30,7 +30,7 @@
 #include "../include/ActionInitialization.hh"
 #include "../include/PrimaryGeneratorAction.hh"
 #include "../include/RunAction.hh"
-#include "../include/EventAction.hh"
+#include "../include/.hh"
 #include "../include/SteppingAction.hh"
 
 #include "DetectorConstruction.hh"
@@ -68,7 +68,7 @@ void ActionInitialization::Build() const {
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
 
-  EventAction* eventAction = new EventAction(runAction, outputFile);
+  EventAction* eventAction = new EventAction(runAction);
   SetUserAction(eventAction);
 
   SetUserAction(new SteppingAction(eventAction, fDetConstruction));
