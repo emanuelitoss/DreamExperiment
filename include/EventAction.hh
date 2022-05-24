@@ -42,7 +42,7 @@ class EventAction : public G4UserEventAction
 
   public:
 
-  EventAction(RunAction* runAction, G4String outString);
+  EventAction(RunAction* runAction);
   virtual ~EventAction();
   
   virtual void BeginOfEventAction(const G4Event* event);
