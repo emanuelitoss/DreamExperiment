@@ -4,7 +4,7 @@ TO DO LIST
 
 (V) Modifica della geometria del detector
 
------ Simulazione -----
+----- Simulazione -----g
 
 (X) Distribuzione angolare dei muoni entranti:
 	(V) Minimizzare il raggio dell'envelope attorno al detector
