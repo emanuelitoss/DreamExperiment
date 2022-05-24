@@ -6,12 +6,14 @@ TO DO LIST
 
 ----- Simulazione -----
 
-(V) Distribuzione angolare dei muoni entranti:
+(X) Distribuzione angolare dei muoni entranti:
 	(V) Minimizzare il raggio dell'envelope attorno al detector
 	(V) Applicare metodo del piano tangente
 	(V) Fare un check del fatto che le rotazioni siano corrette
+	(X) Aggiustare il metodo di generazione della direzione
 
-(X) Inserire una physicsList adatta al nostro esperimento - vedere altri esempi
+(X) Inserire una physicsList adatta al nostro esperimento (per ora si usa FTFP_BERT)
+	vedere in: https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
 	>> deve includere Cherenkov
 	>> deve essere adatto alle nostre energie
 	>> deve contenere tutti i processi che sono rilevanti nel nostro caso (Cherenkov, scintillazione, bremsstrahlung, scattering vari..)
@@ -20,15 +22,19 @@ TO DO LIST
 
 (X) Estrazione dei dati
 	(X) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale
+		// inserire un counter
 	(V) n-tupla che contiene posizione e direzione del muore generato
 	(V) n-tupla delle energie perse nei tre rivelatori (fare il check che la particella sia nel rivelatore)
 		>> variabile G4Event con un metodo che incrementa una delle tre variabili a seconda del rivelatore in cui si trova
 		>> usare qualcosa del tipo AddEdep(indice del volume)
-	(V) raccolta di informazioni ad ogni step
 
-(X) Ricostruire le quantità del laboratorio -> così è molto generico, ce ne occuperemo dopo 
+----- successive -----
 
------ successive (?) -----
+(X) Comprendere il fatto che solo alle estremità del BGO si rilevano i fotoni
+(X) Distinguere Cherenkov da scintillazione
+(X) Fare un set di simulazioni con il BGO ruotato e ricavare Cerenkov/Scintillazione
+(X) 
+
+----- optional ------
 
 (X) Distribuzione in energia dei muoni
-(X) Inserire fotomoltiplicatori alle estremità del BGO
