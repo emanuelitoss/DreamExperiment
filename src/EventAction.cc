@@ -67,6 +67,7 @@ void EventAction::BeginOfEventAction(const G4Event*){
   fEdep_Scint1 = 0.;
   fEdep_Scint2 = 0.;
 
+  IsInBGO = false;
   IsInTrg1 = false;
   IsInTrg2 = false;
 
@@ -95,7 +96,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
   }
 
   // output printing <=> particle pass thorugh both the plastic scintillators
-  if ( IsInTrg1 && IsInTrg2 ){
+  if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
 
     // adding a particle
     fRunAction->addDetectedParticle();
@@ -107,7 +108,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
     // check the file is not open
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     
-    output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_Scint1 << "\t" << fEdep_Scint2 << "\t#" << G4BestUnit(fEdep_BGO,"Energy") << "\t" << G4BestUnit(fEdep_Scint1,"Energy") << endl;
+    output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_Scint1 << "\t" << fEdep_Scint2 << endl;
     output.close();
 
   }
@@ -133,6 +134,7 @@ void EventAction::AddEdepScint2(G4double edep){
 
 void EventAction::PrintStatus(){
   std::cout << OCYAN << "Status of the Event:\n"
+  << "BGO crystal:\t" << IsInBGO << "\n"
   << "Trigger1:\t" << IsInTrg1 << "\n"
   << "Trigger2:\t" << IsInTrg2 << "\n"
   << "---- Energy deposited ----" << "\n"

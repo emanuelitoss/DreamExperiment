@@ -68,10 +68,11 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   auto runData = static_cast<RunData*>
     (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
 
-  //std::cout << ORED << physicalVolume->GetName() << ORESET << std::endl;
-  //std::cout << OCYAN << fDetConstruction->GetBGOcrystal()->GetName() << ORESET << std::endl;
-
+  // for each PV:
+  // modify a boolean value to check the passage of particle through PV
+  // add energy
   if ( physicalVolume == fDetConstruction->GetBGOcrystal() ) {
+    fEventAction->PassedThroughBGO();
     runData->Add(kBGO, edepStep);
     fEventAction->AddEdepBGO(edepStep);
   }

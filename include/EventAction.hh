@@ -48,6 +48,7 @@ class EventAction : public G4UserEventAction
   virtual void BeginOfEventAction(const G4Event* event);
   virtual void EndOfEventAction(const G4Event* event);
 
+  void PassedThroughBGO();
   void PassedThroughScint1();
   void PassedThroughScint2();
 
@@ -69,6 +70,7 @@ class EventAction : public G4UserEventAction
   G4double fEdep_Scint2;
   
   // boolean variables to check if the particle pass thorugh physical volumes
+  G4bool IsInBGO = false;
   G4bool IsInTrg1 = false;
   G4bool IsInTrg2 = false;
   
@@ -76,6 +78,10 @@ class EventAction : public G4UserEventAction
   void PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const;
 
 };
+
+inline void EventAction::PassedThroughBGO(){
+  IsInBGO = true;
+}
 
 inline void EventAction::PassedThroughScint1(){
   IsInTrg1 = true;
