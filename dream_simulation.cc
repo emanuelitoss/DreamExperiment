@@ -65,6 +65,7 @@ int main(int argc,char** argv)
   // Detector construction
   auto detConstruction = new DetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
+  runManager->SetNumberOfThreads(1);
 
   // Physics list
   // Physics lists avilables here:
