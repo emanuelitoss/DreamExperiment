@@ -59,7 +59,7 @@ void ActionInitialization::Build() const {
   ofstream* outfile = new ofstream();
   outfile->open(outputFile);
   if(!outfile) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-  *outfile << "#This file contains the generated points and directions with the tangent plane method\n"
+  *outfile << "#This file contains points and directions generated (tangent plane method)\n"
     << "#x\ty\ttheta\tphi\tdir_x\tdir_y\tdir_z\tpos_x\tpos_y\tpos_z\n" << endl;
   outfile->close();
 
