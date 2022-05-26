@@ -107,8 +107,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  //double theta = acos(pow(G4UniformRand(),1./3));
-  double theta = GetRandomicTheta3CosCos();
+  double theta = acos(pow(G4UniformRand(),1./3));
+  //double theta = GetRandomicTheta3CosCos();
   double phi = G4UniformRand() * 2 * M_PI;
   
   // direction of the beam

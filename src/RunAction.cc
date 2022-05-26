@@ -169,7 +169,7 @@ void RunAction::EndOfRunAction(const G4Run* run){
     G4double particleEnergy = particleGun->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
-        
+
   // Print
   if (IsMaster()) {
     G4cout
