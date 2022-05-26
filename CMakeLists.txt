@@ -47,9 +47,7 @@ set(DREAM_SCRIPTS
   dream_simulation.in
   dream_simulation.out
   init_vis.mac
-  run1.mac
-  run2.mac
-  run3.mac
+  run.mac
   visualize.mac
   )
 
