@@ -71,7 +71,7 @@ int main(int argc,char** argv)
   // Physics lists avilables here:
   // https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
-  physicsList->SetVerboseLevel(1);
+  physicsList->SetVerboseLevel(0);
   // including optical physics
   physicsList->ReplacePhysics(new G4EmStandardPhysics_option4());
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
