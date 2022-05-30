@@ -4,35 +4,41 @@ TO DO LIST
 
 (V) Modifica della geometria del detector
 
------ Simulazione -----g
+(X) Includere la rotazione del BGO 
 
-(X) Distribuzione angolare dei muoni entranti:
+----- Simulazione -----
+
+(V) Distribuzione angolare dei muoni entranti:
 	(V) Minimizzare il raggio dell'envelope attorno al detector
 	(V) Applicare metodo del piano tangente
 	(V) Fare un check del fatto che le rotazioni siano corrette
-	(X) Aggiustare il metodo di generazione della direzione
+	(V) Aggiustare il metodo di generazione della direzione
 
 (V) Inserire una physicsList adatta al nostro esperimento (per ora si usa FTFP_BERT)
 	vedere in: https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
-	>> deve includere Cherenkov
+	G4OpticalPhysics
 	>> deve essere adatto alle nostre energie
 	>> deve contenere tutti i processi che sono rilevanti nel nostro caso (Cherenkov, scintillazione, bremsstrahlung, scattering vari..)
 
+(X) Distinguere la luce Cherenkov da quella di scintillazione
+
 ----- Analisi dati -----
 
-(X) Estrazione dei dati
-	(X) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale > problema
+(V) Estrazione dei dati
+	(V) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale > problema
 	(V) n-tupla che contiene posizione e direzione del muore generato
 	(V) n-tupla delle energie perse nei tre rivelatori (fare il check che la particella sia nel rivelatore)
 		>> variabile G4Event con un metodo che incrementa una delle tre variabili a seconda del rivelatore in cui si trova
 		>> usare qualcosa del tipo AddEdep(indice del volume)
 
+(X) Comparazioni con esperimento
+	(X) Rapporti tra i parametri delle landau: dovrebbe essere uguale a quello che si ottiene in lab, anche se loro hanno la carica e non l'energia
+	(X) Rapporto C/S a vari angoli
+
 ----- successive -----
 
 (X) Comprendere il fatto che solo alle estremità del BGO si rilevano i fotoni
-(X) Distinguere Cherenkov da scintillazione
-(X) Fare un set di simulazioni con il BGO ruotato e ricavare Cerenkov/Scintillazione
 
------ optional ------
+----- optional (per ora) ------
 
 (X) Distribuzione in energia dei muoni
