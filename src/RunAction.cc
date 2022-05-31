@@ -76,14 +76,18 @@ RunAction::RunAction()
 
   // Creating histograms
   analysisManager->CreateH1("EnergyBGO","Energy deposited in BGO crystal", 800, 0., 100, "MeV");
-  analysisManager->CreateH1("EnergyTRG1","Energy deposited in first plastic scintillator", 800, 0., 100*MeV);
-  analysisManager->CreateH1("EnergyTRG2","Energy deposited in second plastic scintillator", 800, 0., 100*MeV);
+  analysisManager->CreateH1("EnergyPlastic1","Energy deposited in first plastic scintillator", 800, 0., 100*MeV);
+  analysisManager->CreateH1("EnergyPlastic2","Energy deposited in second plastic scintillator", 800, 0., 100*MeV);
+  analysisManager->CreateH1("Cherenkov","Cherenkov energy production in BGO", 800, 0., 100*MeV);
+  analysisManager->CreateH1("Scintillation","Scintillation energy production in BGO", 800, 0., 100*MeV);
 
   // Creating ntuple
   analysisManager->CreateNtuple("dreamData", "EnengyDeposit");
   analysisManager->CreateNtupleDColumn("EnergyInBGO");
   analysisManager->CreateNtupleDColumn("EnergyInScintillator1");
   analysisManager->CreateNtupleDColumn("EnergyInScintillator2");
+  analysisManager->CreateNtupleDColumn("EnergyInBGO_Cherenkov");
+  analysisManager->CreateNtupleDColumn("EnergyInBGO_Scintillation");
   analysisManager->FinishNtuple();
 
   // Register accumulable to the accumulable manager
@@ -218,11 +222,21 @@ void RunAction::EndOfRunAction(const G4Run* run){
       << G4BestUnit(analysisManager->GetH1(2)->mean(), "Energy")
       << " rms = "
       << G4BestUnit(analysisManager->GetH1(2)->rms(),  "Energy") << G4endl;
+    
+    G4cout << " EnergyCherenkovBGO : mean = "
+      << G4BestUnit(analysisManager->GetH1(3)->mean(), "Energy")
+      << " rms = "
+      << G4BestUnit(analysisManager->GetH1(3)->rms(),  "Energy") << G4endl;
+    
+    G4cout << " EnergyScintillationBGO : mean = "
+      << G4BestUnit(analysisManager->GetH1(4)->mean(), "Energy")
+      << " rms = "
+      << G4BestUnit(analysisManager->GetH1(4)->rms(),  "Energy") << G4endl;
 
   }
 
   // number od detected events
-  std::cout << OBOLDMAGENTA << "Number od detected events: " << detectedParticles << ORESET << std::endl;
+  std::cout << OBOLDCYAN << "Number od detected events: " << detectedParticles << ORESET << std::endl;
 
   // save histograms & ntuple
   analysisManager->Write();

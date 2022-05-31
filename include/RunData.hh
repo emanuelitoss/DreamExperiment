@@ -41,7 +41,9 @@
 const G4int kBGO = 0;
 const G4int kScint1 = 1;
 const G4int kScint2 = 2;
-const G4int kDim = 3;
+const G4int kBGO_Cherenkov = 3;
+const G4int kBGO_Scintillation = 4;
+const G4int kDim = 5;
 
 ///  Run data class
 ///
@@ -73,7 +75,7 @@ class RunData : public G4Run
 
     private:
         std::array<G4String, kDim> fVolumeNames = { "BGO", "Scintillator_1", "Scintillator_2" };
-        std::array<G4double, kDim> fEdep = { 0., 0., 0. };
+        std::array<G4double, kDim> fEdep = { 0., 0., 0., 0., 0. };
 };
 
 // inline functions

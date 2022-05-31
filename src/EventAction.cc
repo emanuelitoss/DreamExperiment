@@ -66,6 +66,8 @@ void EventAction::BeginOfEventAction(const G4Event*){
   fEdep_BGO = 0.;
   fEdep_Scint1 = 0.;
   fEdep_Scint2 = 0.;
+  fEdep_BGO_Cherenkov = 0.;
+  fEdep_BGO_Scintillation = 0.;
 
   IsInBGO = false;
   IsInTrg1 = false;
@@ -88,11 +90,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
   auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
   if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
     G4cout << "---> End of event: " << eventID << G4endl;
-  
-    PrintEventStatistics(
-      runData->GetEdep(kBGO),
-      runData->GetEdep(kScint1),
-      runData->GetEdep(kScint2));
+    PrintEventStatistics( runData->GetEdep(kBGO), runData->GetEdep(kScint1), runData->GetEdep(kScint2));
   }
 
   // output printing <=> particle pass thorugh both the plastic scintillators
@@ -129,6 +127,14 @@ void EventAction::AddEdepScint1(G4double edep){
 
 void EventAction::AddEdepScint2(G4double edep){
   fEdep_Scint2 += edep;
+}
+
+void EventAction::AddEdepBGOCerenkov(G4double edep){ 
+  fEdep_BGO_Cherenkov += edep;
+}
+
+void EventAction::AddEdepBGOScint(G4double edep){
+  fEdep_BGO_Scintillation += edep;
 }
 
 

@@ -37,6 +37,17 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
+// new
+#include "G4Cerenkov.hh"
+#include "G4EventManager.hh"
+#include "G4Scintillation.hh"
+#include "G4OpticalPhoton.hh"
+#include "G4ProcessManager.hh"
+#include "G4SteppingManager.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4Track.hh"
+
+#include <vector>
 
 SteppingAction::SteppingAction(EventAction* eventAction, const DetectorConstruction* detConstruction)
 : G4UserSteppingAction(),
@@ -65,8 +76,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
 
-  auto runData = static_cast<RunData*>
-    (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+  auto runData = static_cast<RunData*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
 
   // for each PV:
   // modify a boolean value to check the passage of particle through PV
@@ -91,6 +101,37 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   
   // useful print to check the right behaviour:
   //fEventAction->PrintStatus();
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  static G4ParticleDefinition* opticalphoton = G4OpticalPhoton::OpticalPhotonDefinition();
+
+  // loop over secondaries
+  const std::vector <const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
+  for(auto sec : *secondaries)
+  {
+    // do we need this?...
+    //if(sec->GetDynamicParticle()->GetParticleDefinition() == opticalphoton)
+    {
+      G4String creator_process = sec->GetCreatorProcess()->GetProcessName();
+      std::cout << OBOLDGREEN << creator_process << ORESET << std::endl;
+      if(creator_process.compare("Cerenkov") == true)
+      {
+        std::cout << OBOLDRED << "check Cherenkov" << ORESET << std::endl;
+        G4double cher_photon_energy = sec->GetKineticEnergy();
+        runData->Add(kBGO_Cherenkov, cher_photon_energy);
+
+      }
+
+      else if(creator_process.compare("Scintillation") == true)
+      {
+        std::cout << OBOLDRED << "check Scintillation" << ORESET << std::endl;
+        G4double scint_photon_energy = sec->GetKineticEnergy();
+        runData->Add(kBGO_Scintillation, scint_photon_energy);
+      }
+    }
+  }
 
   // check if we are in scoring volume
   if (volume != fScoringVolume) return;
