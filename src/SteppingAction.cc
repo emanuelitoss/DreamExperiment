@@ -98,39 +98,33 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
     runData->Add(kScint2, edepStep);
     fEventAction->AddEdepScint2(edepStep);
   }
-  
-  // useful print to check the right behaviour:
-  //fEventAction->PrintStatus();
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  static G4ParticleDefinition* opticalphoton = G4OpticalPhoton::OpticalPhotonDefinition();
-
-  // loop over secondaries
-  const std::vector <const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
-  for(auto sec : *secondaries)
-  {
-    // do we need this?...
-    //if(sec->GetDynamicParticle()->GetParticleDefinition() == opticalphoton)
+  if ( physicalVolume == fDetConstruction->GetBGOcrystal() ) {
+    // loop over secondaries
+    const std::vector <const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
+    for(auto sec : *secondaries)
     {
       G4String creator_process = sec->GetCreatorProcess()->GetProcessName();
-      std::cout << OBOLDGREEN << creator_process << ORESET << std::endl;
-      if(creator_process.compare("Cerenkov") == true)
+      if(creator_process.compare("Cerenkov") == 0)
       {
-        std::cout << OBOLDRED << "check Cherenkov" << ORESET << std::endl;
         G4double cher_photon_energy = sec->GetKineticEnergy();
         runData->Add(kBGO_Cherenkov, cher_photon_energy);
-
       }
-
-      else if(creator_process.compare("Scintillation") == true)
+      
+      else if(creator_process.compare("Scintillation") == 0)
       {
-        std::cout << OBOLDRED << "check Scintillation" << ORESET << std::endl;
+        std::cout << OBOLDBLUE << "check Scintillation" << ORESET << std::endl;
         G4double scint_photon_energy = sec->GetKineticEnergy();
         runData->Add(kBGO_Scintillation, scint_photon_energy);
       }
     }
+
+    // once you register secondary particles, you delete them
+    // step->DeleteSecondaryVector();
+
   }
 
   // check if we are in scoring volume
