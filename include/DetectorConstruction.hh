@@ -31,6 +31,7 @@
 #define DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolume.hh"
 #include "globals.hh"
 
 class G4VPhysicalVolume;
@@ -62,6 +63,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   protected:
     G4LogicalVolume* fScoringVolume;
+    G4Material* CreateBismuthGermaniumOxygen() const;
 
 };
 
