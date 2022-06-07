@@ -30,10 +30,12 @@
 #include "include/DetectorConstruction.hh"
 #include "include/ActionInitialization.hh"
 #include "include/RunData.hh"
+#include "include/PhysicsList.hh"
 
 #include "G4RunManagerFactory.hh"
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4OpticalPhysics.hh"
+#include "G4Cerenkov.hh"
 #include "G4UImanager.hh"
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
@@ -67,6 +69,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
 
+/*
   // Physics list
   // Physics lists avilables here:
   // https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
@@ -76,9 +79,14 @@ int main(int argc,char** argv)
   physicsList->ReplacePhysics(new G4EmStandardPhysics_option4());
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
   physicsList->RegisterPhysics(opticalPhysics);
+  
   // including physicsList
   runManager->SetUserInitialization(physicsList);
-    
+*/
+
+  // Physics list
+  runManager->SetUserInitialization(new PhysicsList());
+  
   // User action initialization
   auto actionInitialization = new ActionInitialization(detConstruction);
   runManager->SetUserInitialization(actionInitialization);
