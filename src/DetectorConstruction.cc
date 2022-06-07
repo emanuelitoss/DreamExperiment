@@ -28,6 +28,7 @@
 /// \brief Implementation of the DetectorConstruction class
 
 #include "../include/DetectorConstruction.hh"
+#include "../include/OutputColors.hh"
 
 #include "G4RunManager.hh" 
 #include "G4NistManager.hh"
@@ -115,11 +116,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     checkOverlaps);          //overlaps checking
   
   //     
-  // BGO Crystal bgo_material
+  // BGO Crystal
   //  
-  // the position in choosen in order to minimize the envelope sphere
+  G4Material* bgo_material = this->CreateBismuthGermaniumOxygen();
+
+  // position: choosen in order to minimize the envelope sphere
   G4double pos_BGO = minimal_radius - 2 * shape_plasticZ - distance_BGOscintillators - distance_scintillators - shape_bgoXZ / 2;
-  G4Material* bgo_material = nist->FindOrBuildMaterial("G4_BGO");
   G4ThreeVector bgo_position = G4ThreeVector(0, 0, pos_BGO);
         
   // BGO shape
@@ -180,4 +182,37 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 
   //always return the physical World
   return physWorld;
+}
+
+G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
+  
+  // Get nist material manager
+  G4NistManager* nist = G4NistManager::Instance();
+  
+  // BGO material definition
+  G4Material* bgo_basic = nist->FindOrBuildMaterial("G4_BGO");
+  G4Material* bgo_material = new G4Material("BismuthGermaniumOxygen Crystal", 7.13*g/cm3, bgo_basic);
+  // references: Bi4-Ge3-O12
+  // https://iopscience.iop.org/article/10.1088/1361-6560/aa6a49/pdf
+  // https://www.gammadata.se/assets/Uploads/BGO-data-sheet.pdf
+  const G4int n3 = 3;
+  G4double energy[n3]     = {3.544847*eV, 3.49492*eV, 511*keV};
+  G4double rindex[n3]     = {2.15, 2.15, 2.15};
+  G4double absorption[n3] = {60*mm, 240*mm, 1000.4*mm};
+  G4double scintyield[n3] = {8200./MeV, 8200./MeV, 8200./MeV};
+  G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
+  
+  // property independent of energy
+  MPT->AddProperty("SCINTILLATIONYIELD", energy, scintyield, n3);
+  MPT->AddConstProperty("YIELDRATIO", 1.0);
+  MPT->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
+  MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
+
+  // properties that depend on energy
+  MPT->AddProperty("RINDEX", energy, rindex, n3);
+  MPT->AddProperty("ABSLENGTH", energy, absorption, n3);
+
+  bgo_material->SetMaterialPropertiesTable(MPT);
+
+  return bgo_material;
 }
