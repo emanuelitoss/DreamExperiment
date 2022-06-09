@@ -1,4 +1,11 @@
-//// ********************************************************************// * License and Disclaimer                                           *// *                                                                  *// * The  Geant4 software  is  copyright of the Copyright Holders  of *// * the Geant4 Collaboration.  It is provided  under  the terms  and *// * conditions of the Geant4 Software License,  included in the file *// * LICENSE and available at  http://cern.ch/geant4/license .  These *// * include a list of copyright holders.                             *
+//// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
 // *                                                                  *
 // * Neither the authors of this software system, nor their employing *
 // * institutes,nor the agencies providing financial support for this *
@@ -17,8 +24,6 @@
 //
 //
 //
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #ifndef PhysicsList_h
 #define PhysicsList_h 1
@@ -49,7 +54,6 @@ class PhysicsList : public G4VUserPhysicsList
  
   private:
     G4int fVerboseLebel;
-    //OpNovicePhysicsListMessenger* fMessenger;
 };
 
-#endif /* PhysicsList_h */
+#endif

@@ -184,14 +184,14 @@ void PhysicsList::ConstructEM()
 void PhysicsList::ConstructOp()
 {
   G4Cerenkov* cerenkovProcess = new G4Cerenkov("Cerenkov");
-  cerenkovProcess->SetMaxNumPhotonsPerStep(1);
+  cerenkovProcess->SetMaxNumPhotonsPerStep(20);
   cerenkovProcess->SetMaxBetaChangePerStep(10.0);
   cerenkovProcess->SetTrackSecondariesFirst(true);
 
   G4Scintillation* scintillationProcess = new G4Scintillation("Scintillation");
-  scintillationProcess->SetScintillationYieldFactor(1.);
   scintillationProcess->SetTrackSecondariesFirst(true);
-  scintillationProcess->SetScintillationExcitationRatio(0.0);
+  scintillationProcess->SetScintillationYieldFactor(1.);
+  scintillationProcess->SetScintillationExcitationRatio(0.1);
 
   G4OpAbsorption* absorptionProcess = new G4OpAbsorption();
   G4OpRayleigh* rayleighScatteringProcess = new G4OpRayleigh();
