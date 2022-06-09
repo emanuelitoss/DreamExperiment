@@ -63,9 +63,9 @@
 /vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
 # To select or override default colours (note: e+ is blue by default):
 # /vis/modeling/trajectories/list
-/vis/modeling/trajectories/drawByParticleID-0/set mu- cyan
+/vis/modeling/trajectories/drawByParticleID-0/set mu- white
 /vis/modeling/trajectories/drawByParticleID-0/set e- red
-/vis/modeling/trajectories/drawByParticleID-0/set gamma yellow
+/vis/modeling/trajectories/drawByParticleID-0/set gamma green
 
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate
@@ -84,7 +84,7 @@
 # Axes, scale, etc.
 # /vis/scene/add/scale   # Simple scale line
 # in (0,0,0), of length 30cm, blue, without text
-/vis/scene/add/axes 0 0 0 40 cm blue false
+# /vis/scene/add/axes 0 0 0 40 cm blue false
 /vis/scene/add/eventID   # Drawn at end of event
 # /vis/scene/add/date    # Date stamp
 /vis/scene/add/logo2D    # Simple logo
