@@ -59,11 +59,8 @@ int main(int argc,char** argv)
   // G4Random::setTheEngine(new CLHEP::MTwistEngine);
   
   // Construct the default run manager
-  //
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
-  // Set mandatory initialization classes
-  //
   // Detector construction
   auto detConstruction = new DetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
@@ -118,7 +115,6 @@ int main(int argc,char** argv)
   // Free the store: user actions, physics_list and detector_description are
   // owned and deleted by the run manager, so they should not be deleted 
   // in the main() program !
-  
   delete visManager;
   delete runManager;
 }
