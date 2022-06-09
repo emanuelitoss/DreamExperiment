@@ -112,13 +112,15 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
       {
         G4double cher_photon_energy = sec->GetKineticEnergy();
         runData->Add(kBGO_Cherenkov, cher_photon_energy);
+        fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
       }
       
       else if(creator_process.compare("Scintillation") == 0)
       {
-        std::cout << OBOLDBLUE << "check Scintillation" << ORESET << std::endl;
+        std::cout << OYELLOW << "check Scintillation" << ORESET << std::endl;
         G4double scint_photon_energy = sec->GetKineticEnergy();
         runData->Add(kBGO_Scintillation, scint_photon_energy);
+        fEventAction->AddEdepBGOScint(scint_photon_energy);
       }
     }
 

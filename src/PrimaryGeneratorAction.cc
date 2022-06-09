@@ -108,38 +108,24 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
 
   // generation of radnomic angles
   double theta = acos(pow(G4UniformRand(),1./3));
-  //double theta = GetRandomicTheta3CosCos();
+  // double theta = GetRandomicTheta3CosCos();
   double phi = G4UniformRand() * 2 * M_PI;
   
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
-  // fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+  fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
   
   // tangent plane position generation
-  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.1;
-  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.1;
+  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.2;
+  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.2;
   
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
-
-  // a little check that the rotations are well done
-  /*
-  std::cout << OCYAN << "Initial Vector = (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << ORESET << std::endl;
-  */
   Position_Beam->rotateY(theta);
-  /*
-  std::cout << OCYAN << "Vector After \'rotateY()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << ORESET << std::endl;
-  */
   Position_Beam->rotateZ(phi);
-  /*
-  std::cout << OCYAN << "Vector After \'rotateZ()\'= (" << Position_Beam->getX() << ", " << Position_Beam->getY() << ", " << Position_Beam->getZ() << ")"
-  << "\n\tTheta = " << Position_Beam->theta() << "\tPhi = " << Position_Beam->phi() << ORESET << std::endl;
-  */
-
+  
   // writing in output file
   ofstream* output = new ofstream();
   output->open(fileName, ios::app);
@@ -150,8 +136,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   output->close();
 
   // set position of the particle
-  // fParticleGun->SetParticlePosition(*Position_Beam);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
+  fParticleGun->SetParticlePosition(*Position_Beam);
+  // fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
 
   delete output;
   delete Position_Beam;

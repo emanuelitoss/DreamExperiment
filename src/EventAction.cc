@@ -106,7 +106,13 @@ void EventAction::EndOfEventAction(const G4Event* event){
     // check the file is not open
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     
-    output << setw(7) << fEdep << "\t" << fEdep_BGO << "\t" << fEdep_Scint1 << "\t" << fEdep_Scint2 << endl;
+    output << setw(7)
+      << fEdep << "\t"
+      << fEdep_BGO << "\t"
+      << fEdep_Scint1 << "\t"
+      << fEdep_Scint2 << "\t"
+      << fEdep_BGO_Cherenkov << "\t" 
+      << fEdep_BGO_Scintillation << endl;
     output.close();
 
   }

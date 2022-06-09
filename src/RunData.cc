@@ -54,8 +54,6 @@ void RunData::FillPerEvent()
     G4int counter = 0;
     for ( auto edep : fEdep ) {
         analysisManager->FillH1(counter, edep);
-        // here you can check that the energy is always 0... why?
-        // std::cout << BOLDBLACK << "Counter: " << counter << ", Energy deposited: " << edep << RESET << std::endl;
         analysisManager->FillNtupleDColumn(counter++, edep);
     }
     analysisManager->AddNtupleRow();
