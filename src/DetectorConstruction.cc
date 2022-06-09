@@ -196,23 +196,34 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   // https://iopscience.iop.org/article/10.1088/1361-6560/aa6a49/pdf
   // https://www.gammadata.se/assets/Uploads/BGO-data-sheet.pdf
   const G4int n3 = 3;
-  G4double energy[n3]     = {3.544847*eV, 3.49492*eV, 511*keV};
-  G4double rindex[n3]     = {2.15, 2.15, 2.15};
-  G4double absorption[n3] = {60*mm, 240*mm, 1000.4*mm};
-  G4double scintyield[n3] = {8200./MeV, 8200./MeV, 8200./MeV};
+  const double hPlanck = 4.135655e-15;
+  const double c_light = 3e+8;
+  const double meters_to_nanometers = 1e9;
+  // energy = hPlanck * (light speed) / wavelength
+  G4double photonenergy[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
+                            hPlanck*c_light*meters_to_nanometers/400.*eV,     // intermediate energy
+                            hPlanck*c_light*meters_to_nanometers/480.*eV};    // maximum emission at 480 nm
+  G4double rindex[n3]     = {2.25, 2.29, 2.65};                         // not constant: refractive index
+                                                                        // from BGO FermiLab .pptx
+  G4double absorption[n3] = {100.*mm, 80.*mm, 10.*mm};                  // constant: radiation length
+  G4double scintyield[n3] = {8200./MeV, 8200./MeV, 8200./MeV};          // constant: Scintillation yield (#photons/MeV)
+  // new instance of Material Properties
   G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
-  
+ 
   // property independent of energy
-  MPT->AddProperty("SCINTILLATIONYIELD", energy, scintyield, n3);
+  MPT->AddProperty("SCINTILLATIONYIELD", photonenergy, scintyield, n3);
   MPT->AddConstProperty("YIELDRATIO", 1.0);
   MPT->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
+  MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
 
   // properties that depend on energy
-  MPT->AddProperty("RINDEX", energy, rindex, n3);
-  MPT->AddProperty("ABSLENGTH", energy, absorption, n3);
+  MPT->AddProperty("RINDEX", photonenergy, rindex, n3);
+  MPT->AddProperty("ABSLENGTH", photonenergy, absorption, n3);
 
+  // bgo material
   bgo_material->SetMaterialPropertiesTable(MPT);
+  bgo_material->GetIonisation()->SetBirksConstant(0.126 * mm / MeV);  // from BGO FermiLab .pptx
 
   return bgo_material;
 }

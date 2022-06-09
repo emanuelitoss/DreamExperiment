@@ -64,6 +64,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   protected:
     G4LogicalVolume* fScoringVolume;
     G4Material* CreateBismuthGermaniumOxygen() const;
+    G4Material* CreateVinylToluene() const;
+    G4Material* CreateOpticalAir() const;
 
 };
 
