@@ -37,7 +37,7 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
-// new
+
 #include "G4Cerenkov.hh"
 #include "G4EventManager.hh"
 #include "G4Scintillation.hh"
@@ -60,15 +60,13 @@ SteppingAction::~SteppingAction(){}
 
 void SteppingAction::UserSteppingAction(const G4Step* step){
 
-  if (!fScoringVolume) { 
+  if (!fScoringVolume) {
     const DetectorConstruction* detectorConstruction
       = static_cast<const DetectorConstruction*>
         (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
     fScoringVolume = detectorConstruction->GetScoringVolume();   
   }
 
-  // get global volume
-  // auto global_volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   // get volume of the current step
   G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
   G4VPhysicalVolume* physicalVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
@@ -76,11 +74,14 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////// SCORE ENERGY ////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+
   auto runData = static_cast<RunData*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
 
   // for each PV:
-  // modify a boolean value to check the passage of particle through PV
-  // add energy
+  // modify a boolean value to check the passage of particle through PV and add energy
   if ( physicalVolume == fDetConstruction->GetBGOcrystal() ) {
     fEventAction->PassedThroughBGO();
     runData->Add(kBGO, edepStep);
@@ -99,11 +100,11 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
     fEventAction->AddEdepScint2(edepStep);
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  if ( physicalVolume == fDetConstruction->GetBGOcrystal() ) {
-    // loop over secondaries
+  // Cherenkov and scintillation photons in the two PMTs
+  
+  if ( physicalVolume == fDetConstruction->GetBGOcrystal()){
+    
+    // loop over secondaries of this particle
     const std::vector <const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
     for(auto sec : *secondaries)
     {
@@ -112,6 +113,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
       {
         G4double cher_photon_energy = sec->GetKineticEnergy();
         runData->Add(kBGO_Cherenkov, cher_photon_energy);
+        runData->Add(kNum_Cerenkov, 1);
         fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
       }
       
@@ -120,14 +122,64 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
         std::cout << OYELLOW << "check Scintillation" << ORESET << std::endl;
         G4double scint_photon_energy = sec->GetKineticEnergy();
         runData->Add(kBGO_Scintillation, scint_photon_energy);
+        runData->Add(kNum_Scint, 1);
         fEventAction->AddEdepBGOScint(scint_photon_energy);
       }
     }
+  }
+  /*
+  if ( physicalVolume == fDetConstruction->GetCerenkovVolume() || physicalVolume == fDetConstruction->GetScintillatorVolume())
+  {
+    // this particle
+    G4Track* primary = step->GetTrack();
+    G4String creator_process_thisparticle = primary->GetCreatorProcess()->GetProcessName();
+
+    if(creator_process_thisparticle.compare("Cerenkov") == 0 && physicalVolume == fDetConstruction->GetCerenkovVolume()){
+      G4double cher_photon_energy = primary->GetKineticEnergy();
+      runData->Add(kBGO_Cherenkov, cher_photon_energy);
+      runData->Add(kNum_Cerenkov, 1);
+      fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
+      primary->SetKineticEnergy(0.);
+    }
+
+    if(creator_process_thisparticle.compare("Scintillation") == 0 && physicalVolume == fDetConstruction->GetScintillatorVolume()){
+      std::cout << OYELLOW << "check Scintillation" << ORESET << std::endl;
+      G4double scint_photon_energy = primary->GetKineticEnergy();
+      runData->Add(kBGO_Scintillation, scint_photon_energy);
+      runData->Add(kNum_Scint, 1);
+      fEventAction->AddEdepBGOScint(scint_photon_energy);
+      primary->SetKineticEnergy(0.);
+    }
+  
+    // loop over secondaries of this particle
+    const std::vector <const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
+    for(auto sec : *secondaries)
+    {
+      G4String creator_process = sec->GetCreatorProcess()->GetProcessName();
+      if(creator_process.compare("Cerenkov") == 0 && physicalVolume == fDetConstruction->GetCerenkovVolume())
+      {
+        G4double cher_photon_energy = sec->GetKineticEnergy();
+        runData->Add(kBGO_Cherenkov, cher_photon_energy);
+        runData->Add(kNum_Cerenkov, 1);
+        fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
+      }
+      
+      else if(creator_process.compare("Scintillation") == 0 && physicalVolume == fDetConstruction->GetScintillatorVolume())
+      {
+        std::cout << OYELLOW << "check Scintillation" << ORESET << std::endl;
+        G4double scint_photon_energy = sec->GetKineticEnergy();
+        runData->Add(kBGO_Scintillation, scint_photon_energy);
+        runData->Add(kNum_Scint, 1);
+        fEventAction->AddEdepBGOScint(scint_photon_energy);
+      }
+    }
+    
 
     // once you register secondary particles, you delete them
     // step->DeleteSecondaryVector();
 
   }
+  */
 
   // check if we are in scoring volume
   if (volume != fScoringVolume) return;

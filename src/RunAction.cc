@@ -80,7 +80,8 @@ RunAction::RunAction()
   analysisManager->CreateH1("EnergyPlastic2","Energy deposited in second plastic scintillator", 800, 0., 100*MeV);
   analysisManager->CreateH1("Cherenkov","Cherenkov energy production in BGO", 800, 0., 100*MeV);
   analysisManager->CreateH1("Scintillation","Scintillation energy production in BGO", 800, 0., 100*MeV);
-
+  analysisManager->CreateH1("Cherenkov number","Number of Cherenkov photons", 800, 0., 1000);
+  analysisManager->CreateH1("Scintillation number","Number of scintillation photons", 800, 0., 1000);
   // Creating ntuple
   analysisManager->CreateNtuple("dreamData", "EnengyDeposit");
   analysisManager->CreateNtupleDColumn("EnergyInBGO");
@@ -88,7 +89,10 @@ RunAction::RunAction()
   analysisManager->CreateNtupleDColumn("EnergyInScintillator2");
   analysisManager->CreateNtupleDColumn("EnergyInBGO_Cherenkov");
   analysisManager->CreateNtupleDColumn("EnergyInBGO_Scintillation");
+  analysisManager->CreateNtupleDColumn("Number_Cherenkov");
+  analysisManager->CreateNtupleDColumn("Number_Scintillation");
   analysisManager->FinishNtuple();
+
 
   // Register accumulable to the accumulable manager
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
@@ -125,7 +129,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   ofstream output;
   output.open("../analysisDreamSimulation/energies.txt");
   output << "#Energy losses in the three detectors (in MeV):" << "\n"
-    << "# Total\tBGO\tPlastic_1\tPLastic_2\tCherenkovBGO\tScintillationBGO"
+    << "# Total\tBGO\tPlastic_1\tPLastic_2\tCherenkovBGO\tScintillationBGO\tNCherenkov\tNScint"
     << "\n" << std::endl;
   output.close();
 
@@ -235,6 +239,15 @@ void RunAction::EndOfRunAction(const G4Run* run){
       << " rms = "
       << G4BestUnit(analysisManager->GetH1(4)->rms(),  "Energy") << G4endl;
 
+    G4cout << " EnergyScintillationBGO : mean = "
+      << analysisManager->GetH1(5)->mean() << "Number of photons"
+      << " rms = "
+      << analysisManager->GetH1(5)->rms() <<  "Number of photons" << G4endl;
+
+    G4cout << " EnergyScintillationBGO : mean = "
+      << analysisManager->GetH1(6)->mean() << "Number of photons"
+      << " rms = "
+      << analysisManager->GetH1(6)->rms() <<  "Number of photons" << G4endl;
   }
 
   // number od detected events

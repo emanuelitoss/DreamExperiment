@@ -52,6 +52,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     const G4VPhysicalVolume* GetBGOcrystal() const;
     const G4VPhysicalVolume* GetPlasticScintillator_1() const;
     const G4VPhysicalVolume* GetPlasticScintillator_2() const;
+    const G4VPhysicalVolume* GetCerenkovVolume() const;
+    const G4VPhysicalVolume* GetScintillatorVolume() const;
 
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 
@@ -60,6 +62,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* fBGOcrystal;
     G4VPhysicalVolume* fPlasticScintillator_1;
     G4VPhysicalVolume* fPlasticScintillator_2;
+    G4VPhysicalVolume* fCerenkovPMT;
+    G4VPhysicalVolume* fScintillatorPMT;
 
   protected:
     G4LogicalVolume* fScoringVolume;
@@ -80,6 +84,14 @@ inline const G4VPhysicalVolume* DetectorConstruction::GetPlasticScintillator_1()
 
 inline const G4VPhysicalVolume* DetectorConstruction::GetPlasticScintillator_2() const { 
   return fPlasticScintillator_2; 
+}
+
+inline const G4VPhysicalVolume* DetectorConstruction::GetCerenkovVolume() const { 
+  return fCerenkovPMT; 
+}
+
+inline const G4VPhysicalVolume* DetectorConstruction::GetScintillatorVolume() const { 
+  return fScintillatorPMT; 
 }
 
 #endif

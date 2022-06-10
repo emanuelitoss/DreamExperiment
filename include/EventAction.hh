@@ -72,6 +72,8 @@ class EventAction : public G4UserEventAction
   G4double fEdep_Scint2;
   G4double fEdep_BGO_Cherenkov;
   G4double fEdep_BGO_Scintillation;
+  G4int Nphotons_Cerenkov;
+  G4int Nphotons_Scint;
   
   // boolean variables to check if the particle pass thorugh physical volumes
   G4bool IsInBGO = false;

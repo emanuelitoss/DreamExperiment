@@ -68,6 +68,8 @@ void EventAction::BeginOfEventAction(const G4Event*){
   fEdep_Scint2 = 0.;
   fEdep_BGO_Cherenkov = 0.;
   fEdep_BGO_Scintillation = 0.;
+  Nphotons_Cerenkov = 0;
+  Nphotons_Scint = 0;
 
   IsInBGO = false;
   IsInTrg1 = false;
@@ -112,7 +114,9 @@ void EventAction::EndOfEventAction(const G4Event* event){
       << fEdep_Scint1 << "\t"
       << fEdep_Scint2 << "\t"
       << fEdep_BGO_Cherenkov << "\t" 
-      << fEdep_BGO_Scintillation << endl;
+      << fEdep_BGO_Scintillation << "\t"
+      << Nphotons_Cerenkov << "\t"
+      << Nphotons_Scint << endl;
     output.close();
 
   }
@@ -137,10 +141,12 @@ void EventAction::AddEdepScint2(G4double edep){
 
 void EventAction::AddEdepBGOCerenkov(G4double edep){ 
   fEdep_BGO_Cherenkov += edep;
+  Nphotons_Cerenkov ++;
 }
 
 void EventAction::AddEdepBGOScint(G4double edep){
   fEdep_BGO_Scintillation += edep;
+  Nphotons_Scint ++;
 }
 
 

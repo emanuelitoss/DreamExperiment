@@ -36,7 +36,7 @@
 
 RunData::RunData()
     : G4Run(),
-    fVolumeNames{ {"BGO", "Scintillator_1", "Scintillator_2"} }
+    fVolumeNames{ {"BGO", "Scintillator_1", "Scintillator_2", "Cherenkov PMT", "Scintillation PMT"} }
 {
     for ( auto& edep : fEdep ) edep = 0.;
 }
