@@ -191,7 +191,13 @@ void PhysicsList::ConstructOp()
   G4Scintillation* scintillationProcess = new G4Scintillation("Scintillation");
   scintillationProcess->SetTrackSecondariesFirst(true);
   scintillationProcess->SetScintillationYieldFactor(1.);
-  //scintillationProcess->SetScintillationExcitationRatio(0.5);
+  scintillationProcess->SetEnhancedTimeConstants(true);
+  scintillationProcess->SetFiniteRiseTime(true);
+  scintillationProcess->SetScintillationByParticleType(false);
+  scintillationProcess->SetScintillationTrackInfo(true);
+  scintillationProcess->SetStackPhotons(true);
+  // choose a ratio
+  scintillationProcess->SetScintillationExcitationRatio(0.1);
 
   G4OpAbsorption* absorptionProcess = new G4OpAbsorption();
   G4OpRayleigh* rayleighScatteringProcess = new G4OpRayleigh();
