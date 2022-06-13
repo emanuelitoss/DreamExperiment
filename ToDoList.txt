@@ -4,8 +4,6 @@ TO DO LIST
 
 (V) Modifica della geometria del detector
 
-(X) Includere la rotazione "automatica" del BGO
-
 ----- Simulazione -----
 
 (V) Distribuzione angolare dei muoni entranti:
@@ -43,7 +41,7 @@ TO DO LIST
 
 ----- successive -----
 
-(X) Comprendere il fatto che solo alle estremità del BGO si rilevano i fotoni
+(V) Comprendere il fatto che solo alle estremità del BGO si rilevano i fotoni
 
 ----- optional (per ora) ------
 
