@@ -42,6 +42,10 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Element.hh"
 
+const double hPlanck = 4.135655e-15;
+const double c_light = 3e+8;
+const double meters_to_nanometers = 1e9;
+
 DetectorConstruction::DetectorConstruction()
 : G4VUserDetectorConstruction(),
   fBGOcrystal(nullptr),
@@ -127,6 +131,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   // BGO Crystal + Photomultipliers
   //  
   G4Material* bgo_material = this->CreateBismuthGermaniumOxygen();
+  G4Material* borosilicate = this->CreatePyrex();
 
   // position: choosen in order to minimize the envelope sphere
   G4double pos_BGO = minimal_radius - 2 * shape_plasticZ - distance_BGOscintillators - distance_scintillators - shape_bgoXZ / 2;
@@ -145,9 +150,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                         "BGO Crystal");           //its name
   
   G4LogicalVolume* PMT_LogicalVolume = 
-    new G4LogicalVolume(PMTsShape,                //its solid
-                        bgo_material,             //its material
-                        "PMT made up of BGO");    //its name
+    new G4LogicalVolume(PMTsShape,                               //its solid
+                        borosilicate,                            //its material
+                        "PMT made up of borosilicate glass");    //its name
                
   fBGOcrystal = new G4PVPlacement(0,              //no rotation
                     bgo_position,                 //at position
@@ -226,15 +231,26 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   G4NistManager* nist = G4NistManager::Instance();
   
   // BGO material definition
-  G4Material* bgo_basic = nist->FindOrBuildMaterial("G4_BGO");
-  G4Material* bgo_material = new G4Material("BismuthGermaniumOxygen Crystal", 7.13*g/cm3, bgo_basic);
   // references: Bi4-Ge3-O12
   // https://iopscience.iop.org/article/10.1088/1361-6560/aa6a49/pdf
   // https://www.gammadata.se/assets/Uploads/BGO-data-sheet.pdf
+
+  // Composition
+  G4Material* bgo_basic = nist->FindOrBuildMaterial("G4_BGO");
+  G4Material* bgo_material = new G4Material("BismuthGermaniumOxygen Crystal", 7.13*g/cm3, bgo_basic);
+  /*
+  G4int percentOx = 12./(4+3+12)*perCent;
+  G4int percentGe = 3./(4+3+12)*perCent;
+  G4int percentBi = 4./(4+3+12)*perCent;
+  G4Element* bismuth = new G4Element("Bismuth", "Bi", 83, 208.9804*g/mole);
+  G4Element* germanium = new G4Element("Germanium", "Ge", 32, 72.59*g/mole);
+  G4Element* oxygen = new G4Element("Oxygen", "O", 8, 15.9994*g/mole);
+  bgo_material->AddElement(bismuth, percentBi);
+  bgo_material->AddElement(germanium, percentGe);
+  bgo_material->AddElement(oxygen, percentOx);
+  */
+  // Optical properties
   const G4int n3 = 3;
-  const double hPlanck = 4.135655e-15;
-  const double c_light = 3e+8;
-  const double meters_to_nanometers = 1e9;
   // energy = hPlanck * (light speed) / wavelength
   G4double photonenergy[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
                             hPlanck*c_light*meters_to_nanometers/400.*eV,     // intermediate energy
@@ -243,17 +259,25 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
                                                                         // from BGO FermiLab .pptx
   G4double absorption[n3] = {100.*mm, 80.*mm, 10.*mm};                  // constant: radiation length
   G4double scintyield[n3] = {8200./MeV, 8200./MeV, 8200./MeV};          // constant: Scintillation yield (#photons/MeV)
+  G4double BGOscint[n3] = {1.0, 1.0, 1.0};
+  
   // new instance of Material Properties
   G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
  
   // property independent of energy
   MPT->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
+  MPT->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 300.*ns);
+  MPT->AddConstProperty("SCINTILLATIONTIMECONSTANT2", 300.*ns);
+  MPT->AddConstProperty("SCINTILLATIONTIMECONSTANT3", 300.*ns);
   MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
   MPT->AddConstProperty("YIELDRATIO", 1.0);
 
   // properties that depend on energy
   MPT->AddProperty("SCINTILLATIONYIELD", photonenergy, scintyield, n3);
+  MPT->AddProperty("SCINTILLATIONCOMPONENT1", photonenergy, BGOscint, n3);
+  MPT->AddProperty("SCINTILLATIONCOMPONENT2", photonenergy, BGOscint, n3);
+  MPT->AddProperty("SCINTILLATIONCOMPONENT3", photonenergy, BGOscint, n3);
   MPT->AddProperty("RINDEX", photonenergy, rindex, n3);
   MPT->AddProperty("ABSLENGTH", photonenergy, absorption, n3);
 
@@ -274,9 +298,6 @@ G4Material* DetectorConstruction::CreateOpticalAir() const {
   G4Material* air_optical = new G4Material("Air", 1.204*kg/m3, air_basic);
   
   const G4int n3 = 3;
-  const double hPlanck = 4.135655e-15;
-  const double c_light = 3e+8;
-  const double meters_to_nanometers = 1e9;
   // energy = hPlanck * (light speed) / wavelength
   G4double photonenergy[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
                             hPlanck*c_light*meters_to_nanometers/400.*eV,     // intermediate energy
@@ -303,4 +324,42 @@ G4Material* DetectorConstruction::CreateOpticalAir() const {
   //air_optical->GetIonisation()->SetBirksConstant(0.126 * mm / MeV);  // from BGO FermiLab .pptx
 
   return air_optical;
+}
+
+G4Material* DetectorConstruction::CreatePyrex() const {
+  
+  // Get nist material manager
+  G4NistManager* nist = G4NistManager::Instance();
+  
+  // BGO material definition
+  G4Material* pyrex_basic = nist->FindOrBuildMaterial("G4_Pyrex_Glass");
+  G4Material* pyrex = new G4Material("Borosilicate_Glass", 2.23*g/cm3, pyrex_basic);
+  
+  const G4int n3 = 3;
+  // energy = hPlanck * (light speed) / wavelength
+  G4double photonenergy[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
+                            hPlanck*c_light*meters_to_nanometers/400.*eV,     // intermediate energy
+                            hPlanck*c_light*meters_to_nanometers/480.*eV};    // maximum emission at 480 nm
+  G4double rindex[n3]     = {1.471, 	1.471, 	1.471};                   // google
+  //G4double absorption[n3] = {100.*m, 100.*m, 100.*m};
+  //G4double scintyield[n3] = {8200./MeV, 8200./MeV, 8200./MeV};
+  // new instance of Material Properties
+  G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
+  
+  // property independent of energy
+  //MPT->AddProperty("SCINTILLATIONYIELD", photonenergy, scintyield, n3);
+  //MPT->AddConstProperty("YIELDRATIO", 1.0);
+  //MPT->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
+  //MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
+  //MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
+
+  // properties that depend on energy
+  MPT->AddProperty("RINDEX", photonenergy, rindex, n3);
+  //MPT->AddProperty("ABSLENGTH", photonenergy, absorption, n3);
+
+  // material
+  pyrex->SetMaterialPropertiesTable(MPT);
+  //air_optical->GetIonisation()->SetBirksConstant(0.126 * mm / MeV);  // from BGO FermiLab .pptx
+
+  return pyrex;
 }

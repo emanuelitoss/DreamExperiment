@@ -70,6 +70,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4Material* CreateBismuthGermaniumOxygen() const;
     G4Material* CreateVinylToluene() const;
     G4Material* CreateOpticalAir() const;
+    G4Material* CreatePyrex() const;
 
 };
 
