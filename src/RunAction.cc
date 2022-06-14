@@ -78,8 +78,8 @@ RunAction::RunAction()
   analysisManager->CreateH1("EnergyBGO","Energy deposited in BGO crystal", 800, 0., 100, "MeV");
   analysisManager->CreateH1("EnergyPlastic1","Energy deposited in first plastic scintillator", 800, 0., 100*MeV);
   analysisManager->CreateH1("EnergyPlastic2","Energy deposited in second plastic scintillator", 800, 0., 100*MeV);
-  analysisManager->CreateH1("Cherenkov","Cherenkov energy production in BGO", 800, 0., 100*MeV);
-  analysisManager->CreateH1("Scintillation","Scintillation energy production in BGO", 800, 0., 100*MeV);
+  analysisManager->CreateH1("Cherenkov","Cherenkov energy production in BGO", 800, 0., 100*keV);
+  analysisManager->CreateH1("Scintillation","Scintillation energy production in BGO", 800, 0., 100*keV);
   analysisManager->CreateH1("Cherenkov number","Number of Cherenkov photons", 800, 0., 1000);
   analysisManager->CreateH1("Scintillation number","Number of scintillation photons", 800, 0., 1000);
   // Creating ntuple
@@ -245,13 +245,13 @@ void RunAction::EndOfRunAction(const G4Run* run){
       << analysisManager->GetH1(5)->rms() <<  "Number of photons" << G4endl;
 
     G4cout << " EnergyScintillationBGO : mean = "
-      << analysisManager->GetH1(6)->mean() << "Number of photons"
+      << analysisManager->GetH1(6)->mean() << " number of photons"
       << " rms = "
-      << analysisManager->GetH1(6)->rms() <<  "Number of photons" << G4endl;
+      << analysisManager->GetH1(6)->rms() <<  " number of photons" << G4endl;
   }
 
   // number od detected events
-  std::cout << OBOLDYELLOW << "Number od detected events: " << detectedParticles << ORESET << std::endl;
+  std::cout << OBOLDWHITE << "Number of detected events: " << detectedParticles << ORESET << std::endl;
 
   // save histograms & ntuple
   analysisManager->Write();

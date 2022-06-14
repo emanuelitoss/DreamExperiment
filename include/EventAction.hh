@@ -33,7 +33,6 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 
-
 class RunAction;
 
 /// Event action class
@@ -48,10 +47,12 @@ class EventAction : public G4UserEventAction
   virtual void BeginOfEventAction(const G4Event* event);
   virtual void EndOfEventAction(const G4Event* event);
 
+  // to check the passage in the detectors
   void PassedThroughBGO();
   void PassedThroughScint1();
   void PassedThroughScint2();
 
+  // add energy losses in materials 
   void AddEdep(G4double edep);
   void AddEdepBGO(G4double edep);
   void AddEdepScint1(G4double edep);
@@ -75,15 +76,14 @@ class EventAction : public G4UserEventAction
   G4int Nphotons_Cerenkov;
   G4int Nphotons_Scint;
   
-  // boolean variables to check if the particle pass thorugh physical volumes
+  // boolean variables to check if the particle passes through physical volumes
   G4bool IsInBGO = false;
   G4bool IsInTrg1 = false;
   G4bool IsInTrg2 = false;
   
-  // private method
-  void PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const;
-
 };
+
+// inline functions
 
 inline void EventAction::PassedThroughBGO(){
   IsInBGO = true;

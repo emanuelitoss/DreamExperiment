@@ -1,3 +1,4 @@
+// output colors
 #ifndef OutputColors_h
 #define OutputColors_h
 

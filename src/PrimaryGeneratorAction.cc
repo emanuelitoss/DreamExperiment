@@ -95,20 +95,20 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
+// this function sets kinematic and specifics of the incoming ray
 void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
-
-  	// this function sets kinematic and specifics of the incoming ray
 
   // default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle = particleTable->FindParticle(particleName="mu-");
   fParticleGun->SetParticleDefinition(particle);
+  // typical energy of a cosmic muon at sea level (see PDG reference)
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  //double theta = acos(pow(G4UniformRand(),1./3));
-  double theta = GetRandomicTheta3CosCos();
+  double theta = acos(pow(G4UniformRand(),1./3));
+  // double theta = GetRandomicTheta3CosCos();
   double phi = G4UniformRand() * 2 * M_PI;
   
   // direction of the beam
@@ -119,8 +119,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
   
   // tangent plane position generation
-  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.2;
-  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius() * 0.2;
+  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
+  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
   
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
   Position_Beam->rotateY(theta);

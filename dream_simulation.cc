@@ -36,6 +36,7 @@
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4OpticalPhysics.hh"
 #include "G4Cerenkov.hh"
+#include "G4Scintillation.hh"
 #include "G4UImanager.hh"
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
@@ -65,21 +66,6 @@ int main(int argc,char** argv)
   auto detConstruction = new DetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
-
-/*
-  // Physics list
-  // Physics lists avilables here:
-  // https://geant4-userdoc.web.cern.ch/UsersGuides/PhysicsListGuide/html/reference_PL/index.html
-  G4VModularPhysicsList* physicsList = new FTFP_BERT;
-  physicsList->SetVerboseLevel(0);
-  // including optical physics
-  physicsList->ReplacePhysics(new G4EmStandardPhysics_option4());
-  G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-  physicsList->RegisterPhysics(opticalPhysics);
-  
-  // including physicsList
-  runManager->SetUserInitialization(physicsList);
-*/
 
   // Physics list
   runManager->SetUserInitialization(new PhysicsList());

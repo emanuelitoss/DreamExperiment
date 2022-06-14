@@ -49,26 +49,26 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     PrimaryGeneratorAction(G4String fileName);   
     virtual ~PrimaryGeneratorAction();
 
-    // method from the base class
     virtual void GeneratePrimaries(G4Event*);
 
-    //setter
+    // output file
     void setOutput(G4String aString){ fileName = aString; }
-
-    //getter
     G4String getOutput(){ return fileName;}
     
     // generator of particle kinematic
     void ParticleKinematicsGenerator();
-    G4double GetRandomicTheta3CosCos();
 
-    // method to access particle gun
+    // method to access particle gun - getter
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
   
   private:
-    G4ParticleGun* fParticleGun; // pointer a to G4 gun class
+    G4ParticleGun* fParticleGun;
     G4Sphere* fEnvelopeSphere;
+    // output file
     G4String fileName;
+
+    // to get a random distribution proportional to cos^2
+    G4double GetRandomicTheta3CosCos();
 };
 
 #endif

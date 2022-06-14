@@ -46,20 +46,6 @@ EventAction::EventAction(RunAction* runAction)
 
 EventAction::~EventAction(){}
 
-void EventAction::PrintEventStatistics(G4double EdepBGO, G4double EdepTRG1, G4double EdepTRG2) const {
- // print event statistics
-  G4cout
-    << "   BGO: total energy: "
-    << std::setw(7) << G4BestUnit(EdepBGO, "Energy")
-    << G4endl
-    << "   PlasticTrigger1: total energy: "
-    << std::setw(7) << G4BestUnit(EdepTRG1, "Energy")
-    << G4endl
-    << "   PlasticTrigger2: total energy: "
-    << std::setw(7) << G4BestUnit(EdepTRG2, "Energy")
-    << G4endl;
-}
-
 void EventAction::BeginOfEventAction(const G4Event*){
 
   fEdep = 0.;
@@ -81,22 +67,23 @@ void EventAction::BeginOfEventAction(const G4Event*){
 }
 
 void EventAction::EndOfEventAction(const G4Event* event){
+  
   // accumulate statistics in run action
   fRunAction->AddEdep(fEdep);
-
-  auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-  runData->FillPerEvent();
 
   //print per event (modulo n)
   auto eventID = event->GetEventID();
   auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
   if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
-    G4cout << "---> End of event: " << eventID << G4endl;
-    PrintEventStatistics( runData->GetEdep(kBGO), runData->GetEdep(kScint1), runData->GetEdep(kScint2));
+    G4cout << "-------> End of event: " << eventID << G4endl;
+    this->PrintStatus();
   }
 
   // output printing <=> particle pass thorugh both the plastic scintillators
   if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
+
+    auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+    runData->FillPerEvent();
 
     // adding a particle
     fRunAction->addDetectedParticle();
@@ -120,6 +107,23 @@ void EventAction::EndOfEventAction(const G4Event* event){
     output.close();
 
   }
+
+}
+
+void EventAction::PrintStatus(){
+  std::cout << OCYAN << "Status of the Event:\n"
+  << " ------------- Status of passage in detectors -------------\n"
+  << "\tBGO crystal:\t" << IsInBGO << "\n"
+  << "\tTrigger1:\t" << IsInTrg1 << "\n"
+  << "\tTrigger2:\t" << IsInTrg2 << "\n"
+  << " ------------- Energy deposited  -------------\n"
+  << "\tTotal:\t" << fEdep << "\n"
+  << "\tBGO:\t" << fEdep_BGO << ", in particular:\n"
+  << "\t\tCherenkov radiation:\t" << fEdep_BGO_Cherenkov << "\t with " << Nphotons_Cerenkov << "photons\n"
+  << "\t\tScintillation:\t" << fEdep_BGO_Scintillation << "\t with " << Nphotons_Scint << "photons\n"
+  << "\tTrigger1:\t" << fEdep_Scint1 << "\n"
+  << "\tTrigger1:\t" << fEdep_Scint2 << "\n"
+  << ORESET << std::endl;
 
 }
 
@@ -147,19 +151,4 @@ void EventAction::AddEdepBGOCerenkov(G4double edep){
 void EventAction::AddEdepBGOScint(G4double edep){
   fEdep_BGO_Scintillation += edep;
   Nphotons_Scint ++;
-}
-
-
-void EventAction::PrintStatus(){
-  std::cout << OCYAN << "Status of the Event:\n"
-  << "BGO crystal:\t" << IsInBGO << "\n"
-  << "Trigger1:\t" << IsInTrg1 << "\n"
-  << "Trigger2:\t" << IsInTrg2 << "\n"
-  << "---- Energy deposited ----" << "\n"
-  << "\tTotal:\t" << fEdep << "\n"
-  << "\tBGO:\t" << fEdep_BGO << "\n"
-  << "\tPlastic_1:\t" << fEdep_Scint1 << "\n"
-  << "\tPlastic_2:\t" << fEdep_Scint2
-  << ORESET << std::endl;
-
 }

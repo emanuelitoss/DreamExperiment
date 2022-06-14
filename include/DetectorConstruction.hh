@@ -48,16 +48,18 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     virtual G4VPhysicalVolume* Construct();
 
-    // getters for physical volumes
+    // getters for physical volumes of the apparatus
     const G4VPhysicalVolume* GetBGOcrystal() const;
     const G4VPhysicalVolume* GetPlasticScintillator_1() const;
     const G4VPhysicalVolume* GetPlasticScintillator_2() const;
     const G4VPhysicalVolume* GetCerenkovVolume() const;
     const G4VPhysicalVolume* GetScintillatorVolume() const;
 
+    // return the scoring volume
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 
   private:
+
     // physical volumes of detector
     G4VPhysicalVolume* fBGOcrystal;
     G4VPhysicalVolume* fPlasticScintillator_1;
@@ -66,7 +68,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* fScintillatorPMT;
 
   protected:
+
     G4LogicalVolume* fScoringVolume;
+
+    // materials of the experiment
     G4Material* CreateBismuthGermaniumOxygen() const;
     G4Material* CreateVinylToluene() const;
     G4Material* CreateOpticalAir() const;
@@ -74,6 +79,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 };
 
+// inline functions
 
 inline const G4VPhysicalVolume* DetectorConstruction::GetBGOcrystal() const { 
   return fBGOcrystal; 
