@@ -101,32 +101,6 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   }
 
   // Cherenkov and scintillation photons in the two PMTs
-  /*
-  if ( physicalVolume == fDetConstruction->GetBGOcrystal()){
-    
-    // loop over secondaries of this particle
-    const std::vector <const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
-    for(auto sec : *secondaries)
-    {
-      G4String creator_process = sec->GetCreatorProcess()->GetProcessName();
-      if(creator_process.compare("Cerenkov") == 0)
-      {
-        G4double cher_photon_energy = sec->GetKineticEnergy();
-        runData->Add(kBGO_Cherenkov, cher_photon_energy);
-        runData->Add(kNum_Cerenkov, 1);
-        fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
-      }
-      
-      else if(creator_process.compare("Scintillation") == 0)
-      {
-        std::cout << OYELLOW << "check Scintillation" << ORESET << std::endl;
-        G4double scint_photon_energy = sec->GetKineticEnergy();
-        runData->Add(kBGO_Scintillation, scint_photon_energy);
-        runData->Add(kNum_Scint, 1);
-        fEventAction->AddEdepBGOScint(scint_photon_energy);
-      }
-    }
-  }*/
   
   if ( physicalVolume == fDetConstruction->GetBGOcrystal())
   {
@@ -156,15 +130,17 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
         runData->Add(kNum_Cerenkov, 1);
         fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
         primary->SetKineticEnergy(0.);
+        primary->SetTrackStatus(fStopAndKill);
       }
 
       if(read_a_photon_scintillation){
-        std::cout << OYELLOW << "check Scintillation" << ORESET << std::endl;
+        //std::cout << OBLUE << "check Scintillation" << ORESET << std::endl;
         G4double scint_photon_energy = primary->GetKineticEnergy();
         runData->Add(kBGO_Scintillation, scint_photon_energy);
         runData->Add(kNum_Scint, 1);
         fEventAction->AddEdepBGOScint(scint_photon_energy);
         primary->SetKineticEnergy(0.);
+        primary->SetTrackStatus(fStopAndKill);
       }
     }
   }
