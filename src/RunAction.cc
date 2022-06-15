@@ -251,7 +251,8 @@ void RunAction::EndOfRunAction(const G4Run* run){
   }
 
   // number od detected events
-  std::cout << OBOLDWHITE << "Number of detected events: " << detectedParticles << ORESET << std::endl;
+  if(!IsMaster())
+    std::cout << OBOLDWHITE << "Number of detected events: " << detectedParticles << ORESET << std::endl;
 
   // save histograms & ntuple
   analysisManager->Write();
