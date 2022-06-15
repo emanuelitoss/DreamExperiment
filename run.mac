@@ -5,4 +5,5 @@
 #
 #/run/numberOfThreads 2
 #
-/run/beamOn 50000
+# 1 hour in lab corresponds to 101269 events
+/run/beamOn 101269
