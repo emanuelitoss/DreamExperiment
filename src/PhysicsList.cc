@@ -194,10 +194,8 @@ void PhysicsList::ConstructOp()
   scintillationProcess->SetEnhancedTimeConstants(false); // to rightly write names of contants
   scintillationProcess->SetFiniteRiseTime(true);
   scintillationProcess->SetScintillationByParticleType(false);
-  scintillationProcess->SetScintillationTrackInfo(true);
+  //scintillationProcess->SetScintillationTrackInfo(true);
   scintillationProcess->SetStackPhotons(true);
-  // choose a ratio
-  scintillationProcess->SetScintillationExcitationRatio(0.0);
 
   G4OpAbsorption* absorptionProcess = new G4OpAbsorption();
   G4OpRayleigh* rayleighScatteringProcess = new G4OpRayleigh();
