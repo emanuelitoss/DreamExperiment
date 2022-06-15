@@ -107,8 +107,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  // double theta = acos(pow(G4UniformRand(),1./3));
-  double theta = GetRandomicTheta3CosCos();
+  double theta = acos(pow(G4UniformRand(),1./3));
+  // double theta = GetRandomicTheta3CosCos();
   double phi = G4UniformRand() * 2 * M_PI;
   
   const double radius = fEnvelopeSphere->GetOuterRadius();
@@ -123,10 +123,10 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // tangent plane position generation
   double position_x;
   double position_y;
-  do{
+  //do{
     position_x = (G4UniformRand() - 0.5) * 2 * radius;
     position_y = (G4UniformRand() - 0.5) * 2 * radius;
-  }while(position_x*position_x + position_y*position_y > radius*radius);
+  //}while(position_x*position_x + position_y*position_y > radius*radius);
   //position_x*=0.4;
   //position_y*=0.4;
 

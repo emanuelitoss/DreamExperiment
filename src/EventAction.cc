@@ -60,6 +60,8 @@ void EventAction::BeginOfEventAction(const G4Event*){
   IsInBGO = false;
   IsInTrg1 = false;
   IsInTrg2 = false;
+  PMT1detection = false;
+  PMT2detection = false;
 
   auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
   runData->Reset();
@@ -82,7 +84,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
   // output printing <=> particle pass thorugh both the plastic scintillators
   if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
     
-   auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+    auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
     runData->FillPerEvent();
 
     // adding a particle
@@ -91,10 +93,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
     // output
     ofstream output;
     output.open("../analysisDreamSimulation/energies.txt", ios::app);
-    
-    // check the file is not open
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-    
     output << setw(7)
       << fEdep << "\t"
       << fEdep_BGO << "\t"
@@ -105,6 +104,8 @@ void EventAction::EndOfEventAction(const G4Event* event){
       << Nphotons_Cerenkov << "\t"
       << Nphotons_Scint << endl;
     output.close();
+
+    std::cout << "... detect a particle" << std::endl;
 
   }
 

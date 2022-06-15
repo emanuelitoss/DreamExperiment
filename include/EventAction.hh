@@ -51,6 +51,8 @@ class EventAction : public G4UserEventAction
   void PassedThroughBGO();
   void PassedThroughScint1();
   void PassedThroughScint2();
+  void DetectionInPMT1();
+  void DetectionInPMT2();
   G4bool BoolTrigger1() const { return IsInTrg1; }
   G4bool BoolTrigger2() const { return IsInTrg2; }
 
@@ -82,12 +84,15 @@ class EventAction : public G4UserEventAction
   G4bool IsInBGO = false;
   G4bool IsInTrg1 = false;
   G4bool IsInTrg2 = false;
+  G4bool PMT1detection = false;
+  G4bool PMT2detection = false;
   
 };
 
 // inline functions
 
 inline void EventAction::PassedThroughBGO(){
+  if(PMT1detection && PMT2detection)
   IsInBGO = true;
 }
 
@@ -97,6 +102,14 @@ inline void EventAction::PassedThroughScint1(){
 
 inline void EventAction::PassedThroughScint2(){
   IsInTrg2 = true;
+}
+
+inline void EventAction::DetectionInPMT1(){
+  PMT1detection = true;
+}
+
+inline void EventAction::DetectionInPMT2(){
+  PMT2detection = true;
 }
 
 #endif

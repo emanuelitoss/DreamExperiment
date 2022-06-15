@@ -121,7 +121,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
     
       // boolean variables
       // a photon is red if passes through the surface between BGO and PMT
-        // G4string::compare returns 0 if it is true and 1 if it is false. >> additive NOT ! to get coherent definitions
+      // notice: G4string::compare returns 0 if it is true and 1 if it is false. >> additive NOT ! to get coherent definitions
       G4bool check_cerenkov = !creator_process_thisparticle.compare("Cerenkov");
       G4bool check_scintillation = !creator_process_thisparticle.compare("Scintillation");
 
@@ -133,20 +133,27 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
       G4bool read_a_photon_scintillation = check_scintillation && prestep && poststep_scintillationPMT;
 
       if(read_a_photon_cerenkov){
+        // add a detection in PMT1 - Cherenkov light
+        fEventAction->DetectionInPMT1();
+        // add a photon and its energy
         G4double cher_photon_energy = primary->GetKineticEnergy();
         runData->Add(kBGO_Cherenkov, cher_photon_energy);
         runData->Add(kNum_Cerenkov, 1);
         fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
+        // delete the photon in order to avoid double counting
         primary->SetKineticEnergy(0.);
         primary->SetTrackStatus(fStopAndKill);
       }
 
       if(read_a_photon_scintillation){
-        //std::cout << OBLUE << "check Scintillation" << ORESET << std::endl;
+        // add a detection in PMT2 - scintillation
+        fEventAction->DetectionInPMT2();
+        // add a photon and its energy
         G4double scint_photon_energy = primary->GetKineticEnergy();
         runData->Add(kBGO_Scintillation, scint_photon_energy);
         runData->Add(kNum_Scint, 1);
         fEventAction->AddEdepBGOScint(scint_photon_energy);
+        // delete the photon in order to avoid double counting
         primary->SetKineticEnergy(0.);
         primary->SetTrackStatus(fStopAndKill);
       }
