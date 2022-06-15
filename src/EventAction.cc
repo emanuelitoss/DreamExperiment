@@ -109,6 +109,18 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
   }
 
+  ofstream output;
+  // output2
+  output.open("../analysisDreamSimulation/goodangles.txt", ios::app);
+  if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
+
+  if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
+    output << 1 << endl;
+  }else{
+    output << 0 << endl;
+  }
+  output.close();
+
 }
 
 void EventAction::PrintStatus(){
