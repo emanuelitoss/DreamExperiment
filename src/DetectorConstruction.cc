@@ -246,38 +246,32 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   // Composition
   G4Material* bgo_basic = nist->FindOrBuildMaterial("G4_BGO");
   G4Material* bgo_material = new G4Material("BismuthGermaniumOxygen Crystal", 7.13*g/cm3, bgo_basic);
-  /*G4Material* bgo_material = new G4Material("BismuthGermaniumOxygen Crystal", 7.13*g/cm3, 3);
-
-  G4Element* bismuth = new G4Element("Bismuth", "Bi", 83, 208.9804*g/mole);
-  G4Element* germanium = new G4Element("Germanium", "Ge", 32, 72.59*g/mole);
-  G4Element* oxygen = new G4Element("Oxygen", "O", 8, 15.9994*g/mole);
-  bgo_material->AddElement(bismuth, 4);
-  bgo_material->AddElement(germanium, 3);
-  bgo_material->AddElement(oxygen, 12);
-  */
 
   // Optical properties
   const G4int n3 = 3;
   const G4int n10 = 10;
   // energy = hPlanck * (light speed) / wavelength
   G4double energies_cher_photons[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
-                            hPlanck*c_light*meters_to_nanometers/400.*eV,     // intermediate energy
-                            hPlanck*c_light*meters_to_nanometers/480.*eV};    // maximum emission at 480 nm
-  G4double rindex[n3]     = {2.25, 2.29, 2.65};                         // not constant: refractive index
-                                                                        // from BGO FermiLab .pptx
-  G4double absorption[n3] = {100.*mm, 80.*mm, 10.*mm};                  // from BGO FermiLab .pptx
-  G4double energies_scint_photons[n10] = {hPlanck*c_light*meters_to_nanometers/300.*eV, // from BGO FermiLab .pptx
-                                          hPlanck*c_light*meters_to_nanometers/350.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/400.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/450.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/500.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/550.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/600.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/650.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/700.*eV,
-                                          hPlanck*c_light*meters_to_nanometers/750.*eV};
-  G4double scintillation_spectrum[n10] = {0, 0.1, 3.4, 11.5, 14.5, 10.8,
-                                          5.5, 3, 1.7, 0.7};
+                                        hPlanck*c_light*meters_to_nanometers/400.*eV,  // intermediate energy
+                                        hPlanck*c_light*meters_to_nanometers/480.*eV}; // maximum emission at 480 nm
+
+  G4double energies_photons[n10] = {hPlanck*c_light*meters_to_nanometers/300.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/350.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/400.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/450.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/500.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/550.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/600.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/650.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/700.*eV,
+                                    hPlanck*c_light*meters_to_nanometers/750.*eV};
+
+  G4double rindex[n10]     = {2.75, 2.42, 2.30, 2.25, 2.21, 2.17, 2.16, 2.15, 2.15, 2.15}; // from BGO FermiLab .pptx
+
+  //G4double absorption[n3] = {100.*mm, 80.*mm, 10.*mm}; // from BGO FermiLab .pptx
+  G4double absorption[n10] = {0.1*mm, 75.*mm, 82.*mm, 90.*mm, 100.*mm, 105.*mm, 112.*mm, 120.*mm, 125.*mm, 130.*mm};
+
+  G4double scintillation_spectrum[n10] = {0, 0.1, 3.4, 11.5, 14.5, 10.8, 5.5, 3, 1.7, 0.7}; // from BGO FermiLab .pptx
 
   // new instance of Material Properties
   G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
@@ -287,13 +281,12 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
   MPT->AddConstProperty("YIELDRATIO", 0.01);
-  MPT->AddConstProperty("SCINTILLATIONYIELD", 8200. / MeV);
+  MPT->AddConstProperty("SCINTILLATIONYIELD", 8./MeV);
 
   // properties that depend on energy
-  //MPT->AddProperty("SCINTILLATIONYIELD", photonenergy, scintyield, n3);
-  MPT->AddProperty("RINDEX", energies_cher_photons, rindex, n3);
-  MPT->AddProperty("ABSLENGTH", energies_cher_photons, absorption, n3);
-  MPT->AddProperty("SLOWCOMPONENT", energies_scint_photons, scintillation_spectrum, n10)->SetSpline(true);
+  //MPT->AddProperty("RINDEX", energies_photons, rindex, n10)->SetSpline(true);
+  MPT->AddProperty("ABSLENGTH", energies_photons, absorption, n10);
+  //MPT->AddProperty("FASTCOMPONENT", energies_photons, scintillation_spectrum, n10)->SetSpline(true);
 
   // bgo material
   bgo_material->SetMaterialPropertiesTable(MPT);
