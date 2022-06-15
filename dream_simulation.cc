@@ -47,8 +47,14 @@
 #include "G4Types.hh"
 #include "Randomize.hh"
 
+#include <time.h>
+
 int main(int argc,char** argv)
 {
+
+  // storing runtime of the code:
+  clock_t tStart = clock();
+
   // Detect interactive mode (if no arguments) and define UI session
   //
   G4UIExecutive* ui = 0;
@@ -96,6 +102,9 @@ int main(int argc,char** argv)
     ui->SessionStart();
     delete ui;
   }
+
+  std::cout << OBOLDWHITE << "Execution time of the code: "
+    << (double)(clock() - tStart)/CLOCKS_PER_SEC << " s" << ORESET << std::endl;
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are
