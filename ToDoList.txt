@@ -25,7 +25,12 @@ TO DO LIST
 	>> BGO (V)
 	>> Aria (V)
 
------ Analisi dati -----
+(V) Inserimento PMT
+	(V) PMT di vetro borosilicato alle estremità del BGO
+	(V) anziché usare la tripla coincidenza con il BGO, si usa la tripla coincidenza con i PMTs
+	(V) ammazzare i fotoni dopo la prima lettura per evitare di fare lo store due volte
+
+----- Estrapolazione dati -----
 
 (V) Estrazione dei dati
 	(V) tenere conto del numero di eventi generati e di eventi rilevati dall'apparato sperimentale > problema
@@ -35,13 +40,10 @@ TO DO LIST
 		>> usare qualcosa del tipo AddEdep(indice del volume)
 	(V) tenere conto del numero di fotoni di scintillazione e Cherenkov generati per ogni evento nel BGO
 
-(X) Comparazioni con esperimento
-	(X) Rapporto C/S a vari angoli con i tre metodi
-	(X) Estrarre il rate di eventi rilevati dall'apparato
+----- Analisi dati e comparazione con esperimento -----
 
------ successive -----
-
-(V) Comprendere il fatto che solo alle estremità del BGO si rilevano i fotoni
+(~V) Verificare che, a X gradi, il rate di eventi rilevati è lo stesso del lab
+(X) Rapporto C/S a vari angoli
 
 ----- optional (per ora) ------
 
