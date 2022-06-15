@@ -107,22 +107,30 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  double theta = acos(pow(G4UniformRand(),1./3));
-  // double theta = GetRandomicTheta3CosCos();
+  // double theta = acos(pow(G4UniformRand(),1./3));
+  double theta = GetRandomicTheta3CosCos();
   double phi = G4UniformRand() * 2 * M_PI;
   
+  const double radius = fEnvelopeSphere->GetOuterRadius();
+
   // direction of the beam
-  G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, fEnvelopeSphere->GetOuterRadius());
+  G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, -radius);
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
   fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
-  // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+  // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,-1));
   
   // tangent plane position generation
-  double position_x = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
-  double position_y = (G4UniformRand() - 0.5) * 2 * fEnvelopeSphere->GetOuterRadius();
-  
-  G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, -fEnvelopeSphere->GetOuterRadius());
+  double position_x;
+  double position_y;
+  do{
+    position_x = (G4UniformRand() - 0.5) * 2 * radius;
+    position_y = (G4UniformRand() - 0.5) * 2 * radius;
+  }while(position_x*position_x + position_y*position_y > radius*radius);
+  //position_x*=0.4;
+  //position_y*=0.4;
+
+  G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, radius);
   Position_Beam->rotateY(theta);
   Position_Beam->rotateZ(phi);
   
@@ -137,7 +145,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
 
   // set position of the particle
   fParticleGun->SetParticlePosition(*Position_Beam);
-  // fParticleGun->SetParticlePosition(G4ThreeVector(0,0,-fEnvelopeSphere->GetOuterRadius()));
+  // fParticleGun->SetParticlePosition(G4ThreeVector(0,0,radius));
 
   delete output;
   delete Position_Beam;

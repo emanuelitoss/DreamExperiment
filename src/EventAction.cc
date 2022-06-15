@@ -81,8 +81,8 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
   // output printing <=> particle pass thorugh both the plastic scintillators
   if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
-
-    auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+    
+   auto runData = static_cast<RunData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
     runData->FillPerEvent();
 
     // adding a particle
