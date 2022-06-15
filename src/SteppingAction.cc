@@ -54,7 +54,9 @@ SteppingAction::SteppingAction(EventAction* eventAction, const DetectorConstruct
   fEventAction(eventAction),
   fScoringVolume(0),
   fDetConstruction(detConstruction)
-{}
+{
+  z_minimum = detConstruction->GetPlasticScintillator_1()->GetObjectTranslation().getZ() - 0.51 * 10.*cm;
+}
 
 SteppingAction::~SteppingAction(){}
 
@@ -71,12 +73,20 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
   G4VPhysicalVolume* physicalVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
 
+  /////////////////////////////////////////////// TRIGGER //////////////////////////////////////////////
+  
+  // check that it is a muon
+  G4Track* primary = step->GetTrack();
+  G4bool check_muon = primary->GetParticleDefinition()->GetParticleName() == "mu-";
+  if(check_muon){
+    if(EstinguishParticleIfNotTrigger(step))
+      return;
+  }
+
+  //////////////////////////////////////////// SCORE ENERGY ////////////////////////////////////////////
+
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////// SCORE ENERGY ////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
 
   auto runData = static_cast<RunData*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
 
@@ -104,10 +114,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
   
   if ( physicalVolume == fDetConstruction->GetBGOcrystal())
   {
-    
-    // this particle
-    G4Track* primary = step->GetTrack();
-    if(primary->GetParticleDefinition()->GetParticleName() != "mu-")
+
+    if(!check_muon) // if it is not a muon
     {
       G4String creator_process_thisparticle = primary->GetCreatorProcess()->GetProcessName();
     
@@ -150,4 +158,23 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
 
   fEventAction->AddEdep(edepStep);
 
+}
+
+G4bool SteppingAction::EstinguishParticleIfNotTrigger(const G4Step* step)
+{
+  // get z position of the muon and check if it is < than the last z compatible with a plastic scintillator:
+  G4double z_muon = step->GetPreStepPoint()->GetPosition().getZ();
+  G4bool check_z = z_muon < z_minimum;
+
+  // passage through plastics
+  G4bool plastics = fEventAction->BoolTrigger1() && fEventAction->BoolTrigger2();
+
+  // in the case of: mu-, not triggered, and pass the plastics,
+  // kill the particle to avoid unuseful steps
+  if(check_z && (!plastics)){
+    G4Track* primary = step->GetTrack();
+    primary->SetTrackStatus(fStopAndKill);
+    return true;
+  }
+  else return false;
 }

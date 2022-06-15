@@ -52,9 +52,13 @@ class SteppingAction : public G4UserSteppingAction{
     virtual void UserSteppingAction(const G4Step*);
 
   private:
+    G4double z_minimum;
     EventAction* fEventAction;
     G4LogicalVolume* fScoringVolume;
     const DetectorConstruction* fDetConstruction;
+  
+  protected:
+    G4bool EstinguishParticleIfNotTrigger(const G4Step* step);
 
 };
 

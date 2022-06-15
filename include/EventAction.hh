@@ -51,6 +51,8 @@ class EventAction : public G4UserEventAction
   void PassedThroughBGO();
   void PassedThroughScint1();
   void PassedThroughScint2();
+  G4bool BoolTrigger1() const { return IsInTrg1; }
+  G4bool BoolTrigger2() const { return IsInTrg2; }
 
   // add energy losses in materials 
   void AddEdep(G4double edep);
