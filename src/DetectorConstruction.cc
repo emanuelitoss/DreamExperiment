@@ -281,12 +281,12 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
   MPT->AddConstProperty("YIELDRATIO", 0.01);
-  MPT->AddConstProperty("SCINTILLATIONYIELD", 8./MeV);
+  MPT->AddConstProperty("SCINTILLATIONYIELD", 8200./MeV);
 
   // properties that depend on energy
-  //MPT->AddProperty("RINDEX", energies_photons, rindex, n10)->SetSpline(true);
+  MPT->AddProperty("RINDEX", energies_photons, rindex, n10)->SetSpline(true);
   MPT->AddProperty("ABSLENGTH", energies_photons, absorption, n10);
-  //MPT->AddProperty("FASTCOMPONENT", energies_photons, scintillation_spectrum, n10)->SetSpline(true);
+  MPT->AddProperty("SLOWCOMPONENT", energies_photons, scintillation_spectrum, n10)->SetSpline(true);
 
   // bgo material
   bgo_material->SetMaterialPropertiesTable(MPT);
