@@ -106,16 +106,16 @@ void EventAction::EndOfEventAction(const G4Event* event){
     std::cout << "... detecting a particle ..." << std::endl;
 
   }
-
+  /*
   ofstream output;
-  output.open("../analysisDreamSimulation/goodangles.txt", ios::app);
+  output.open("../analysisDreamSimulation/goodangles.dat", ios::app);
   if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
     output << 1 << endl;
   }else{
     output << 0 << endl;
   }
   output.close();
-
+  */
 }
 
 void EventAction::PrintStatus(){
