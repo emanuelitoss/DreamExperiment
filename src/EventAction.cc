@@ -75,10 +75,8 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
   //print per event (modulo n)
   auto eventID = event->GetEventID();
-  auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
-  if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
+  if (( eventID % 10000 == 0 )) {
     G4cout << "-------> End of event: " << eventID << G4endl;
-    this->PrintStatus();
   }
 
   // output printing <=> particle pass thorugh both the plastic scintillators
@@ -105,15 +103,12 @@ void EventAction::EndOfEventAction(const G4Event* event){
       << Nphotons_Scint << endl;
     output.close();
 
-    std::cout << "... detect a particle" << std::endl;
+    std::cout << "... detecting a particle ..." << std::endl;
 
   }
 
   ofstream output;
-  // output2
   output.open("../analysisDreamSimulation/goodangles.txt", ios::app);
-  if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-
   if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
     output << 1 << endl;
   }else{

@@ -55,6 +55,9 @@ class EventAction : public G4UserEventAction
   void DetectionInPMT2();
   G4bool BoolTrigger1() const { return IsInTrg1; }
   G4bool BoolTrigger2() const { return IsInTrg2; }
+  G4bool BoolPMT1() const { return PMT1detection; }
+  G4bool BoolPMT2() const { return PMT2detection; }
+  G4bool Bool() const { return IsInBGO; }
 
   // add energy losses in materials 
   void AddEdep(G4double edep);
@@ -92,8 +95,9 @@ class EventAction : public G4UserEventAction
 // inline functions
 
 inline void EventAction::PassedThroughBGO(){
-  if(PMT1detection && PMT2detection)
-  IsInBGO = true;
+  if(PMT1detection && PMT2detection){
+    IsInBGO = true;
+  }
 }
 
 inline void EventAction::PassedThroughScint1(){
