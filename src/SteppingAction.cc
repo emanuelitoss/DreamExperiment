@@ -111,54 +111,49 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
 
   // Cherenkov and scintillation photons in the two PMTs
   
-  if ( physicalVolume == fDetConstruction->GetBGOcrystal())
+  if(!check_muon) // if it is not a muon
   {
-    if(!check_muon) // if it is not a muon
-    {
-      G4String creator_process_thisparticle = primary->GetCreatorProcess()->GetProcessName();
+    G4String creator_process_thisparticle = primary->GetCreatorProcess()->GetProcessName();
 
-      // boolean variables
-      // a photon is red if passes through the surface between BGO and PMT
-      // notice: G4string::compare returns 0 if it is true and 1 if it is false.
-      //          >> additive NOT ! to get coherent definitions
-      G4bool check_cerenkov = !creator_process_thisparticle.compare("Cerenkov");
-      G4bool check_scintillation = !creator_process_thisparticle.compare("Scintillation");
+    // boolean variables
+    // a photon is red if passes through the surface between BGO and PMT
+    // notice: G4string::compare returns 0 if it is true and 1 if it is false.
+    //          >> additive NOT ! to get coherent definitions
+    G4bool check_cerenkov = !creator_process_thisparticle.compare("Cerenkov");
+    G4bool check_scintillation = !creator_process_thisparticle.compare("Scintillation");
 
-      G4bool prestep = step->GetPreStepPoint()->GetPhysicalVolume() == fDetConstruction->GetBGOcrystal();
-      G4bool poststep_cerenkovPMT = step->GetPostStepPoint()->GetPhysicalVolume() == fDetConstruction->GetCerenkovVolume();
-      G4bool poststep_scintillationPMT = step->GetPostStepPoint()->GetPhysicalVolume() == fDetConstruction->GetScintillatorVolume();
-      G4bool read_a_photon_cerenkov = check_cerenkov && prestep && poststep_cerenkovPMT;
-      G4bool read_a_photon_scintillation = check_scintillation && prestep && poststep_scintillationPMT;
+    G4bool prestep = step->GetPreStepPoint()->GetPhysicalVolume() == fDetConstruction->GetBGOcrystal();
+    G4bool poststep_cerenkovPMT = step->GetPostStepPoint()->GetPhysicalVolume() == fDetConstruction->GetCerenkovVolume();
+    G4bool poststep_scintillationPMT = step->GetPostStepPoint()->GetPhysicalVolume() == fDetConstruction->GetScintillatorVolume();
 
-      if(read_a_photon_cerenkov){
-        // add a detection in PMT1 - Cherenkov light - boolean variable
-        fEventAction->DetectionInPMT1();
+    if(check_cerenkov && prestep && poststep_cerenkovPMT){
+      // add a detection in PMT1 - Cherenkov light - boolean variable
+      fEventAction->DetectionInPMT1();
 
-        // add a photon and its energy
-        G4double cher_photon_energy = primary->GetKineticEnergy();
-        runData->Add(kBGO_Cherenkov, cher_photon_energy);
-        runData->Add(kNum_Cerenkov, 1);
-        fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
+      // add a photon and its energy
+      G4double cher_photon_energy = primary->GetKineticEnergy();
+      runData->Add(kBGO_Cherenkov, cher_photon_energy);
+      runData->Add(kNum_Cerenkov, 1);
+      fEventAction->AddEdepBGOCerenkov(cher_photon_energy);
 
-        // delete the photon in order to avoid double counting
-        primary->SetKineticEnergy(0.);
-        primary->SetTrackStatus(fStopAndKill);
-      }
+      // delete the photon in order to avoid double counting
+      primary->SetKineticEnergy(0.);
+      primary->SetTrackStatus(fStopAndKill);
+    }
 
-      if(read_a_photon_scintillation){
-        // add a detection in PMT2 - scintillation - boolean variable
-        fEventAction->DetectionInPMT2();
+    if(check_scintillation && prestep && poststep_scintillationPMT){
+      // add a detection in PMT2 - scintillation - boolean variable
+      fEventAction->DetectionInPMT2();
 
-        // add a photon and its energy
-        G4double scint_photon_energy = primary->GetKineticEnergy();
-        runData->Add(kBGO_Scintillation, scint_photon_energy);
-        runData->Add(kNum_Scint, 1);
-        fEventAction->AddEdepBGOScint(scint_photon_energy);
+      // add a photon and its energy
+      G4double scint_photon_energy = primary->GetKineticEnergy();
+      runData->Add(kBGO_Scintillation, scint_photon_energy);
+      runData->Add(kNum_Scint, 1);
+      fEventAction->AddEdepBGOScint(scint_photon_energy);
 
-        // delete the photon in order to avoid double counting
-        primary->SetKineticEnergy(0.);
-        primary->SetTrackStatus(fStopAndKill);
-      }
+      // delete the photon in order to avoid double counting
+      primary->SetKineticEnergy(0.);
+      primary->SetTrackStatus(fStopAndKill);
     }
   }
 
