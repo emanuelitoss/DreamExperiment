@@ -30,6 +30,8 @@
 #include "../include/DetectorConstruction.hh"
 #include "../include/OutputColors.hh"
 
+#include "G4RotationMatrix.hh"
+
 #include "G4RunManager.hh" 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -49,7 +51,7 @@ const double hPlanck = 4.135655e-15;
 const double c_light = 3e+8;
 const double meters_to_nanometers = 1e9;
 
-DetectorConstruction::DetectorConstruction()
+DetectorConstruction::DetectorConstruction(G4double angle_degrees)
 : G4VUserDetectorConstruction(),
   fBGOcrystal(nullptr),
   fPlasticScintillator_1(nullptr),
@@ -57,7 +59,9 @@ DetectorConstruction::DetectorConstruction()
   fCerenkovPMT(nullptr),
   fScintillatorPMT(nullptr),
   fScoringVolume(0)
-{}
+{
+  rotation_angle = angle_degrees * M_PI / 180. * radian;
+}
 
 DetectorConstruction::~DetectorConstruction(){}
 
@@ -77,11 +81,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   const G4double shape_PMT_Y = 0.5*cm; // the order of absorption length in BG crystals
   
   // minimal radius such that the experiment is circumscribed in a sphere
-  // we willl use minimal radius + 20%
+  // we willl use minimal radius + 30%
   G4double Yheight = 2*shape_PMT_Y + shape_bgoY;
   G4double H = 2 * shape_plasticZ + distance_BGOscintillators + distance_scintillators;
-  const G4double minimal_radius = (4 * H*H + Yheight*Yheight) / (8*H);
-  G4double radius_sphere = minimal_radius * 1.15;
+  minimal_radius = (4 * H*H + Yheight*Yheight) / (8*H);
+  G4double radius_sphere = minimal_radius * 1.4; // < sqrt(3) = 1.732..
   
   std::cout << OBOLDWHITE
     << "Minimal radius of the envelope sphere:\t" << G4BestUnit(minimal_radius,"Length") << "\n"
@@ -149,7 +153,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
         
   // BGO & PMTs shape
   G4Box* BGOShape = new G4Box("BGO Box", 0.5*shape_bgoXZ, 0.5*shape_bgoY, 0.5*shape_bgoXZ);
-  G4Box* PMTsShape = new G4Box("BGO Box", 0.5*shape_PMT_XZ, 0.5*shape_PMT_Y, 0.5*shape_PMT_XZ);
+  G4Box* PMTsShape = new G4Box("PMT Box", 0.5*shape_PMT_XZ, 0.5*shape_PMT_Y, 0.5*shape_PMT_XZ);
 
   // logical volumes
   G4LogicalVolume* BGO_LogicalVolume = 
@@ -161,8 +165,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
     new G4LogicalVolume(PMTsShape,                               //its solid
                         borosilicate,                            //its material
                         "PMT made up of borosilicate glass");    //its name
-               
-  fBGOcrystal = new G4PVPlacement(0,              //no rotation
+
+  // rotation matrix
+  G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
+  rotationMatrix->rotateX(rotation_angle);
+
+  // delta vector useful to translate PMTs
+  G4ThreeVector original_vector = G4ThreeVector(0, 0.5*(shape_bgoY+shape_PMT_Y), 0);
+  G4ThreeVector translated_vector = original_vector;
+  translated_vector.rotateX(-rotation_angle);
+
+  G4ThreeVector delta_vect = G4ThreeVector();
+  delta_vect = (translated_vector - original_vector);
+
+  fBGOcrystal = new G4PVPlacement(rotationMatrix,
                     bgo_position,                 //at position
                     BGO_LogicalVolume,            //its logical volume
                     "BGO Crystal",                //its name
@@ -171,8 +187,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     0,                            //copy number
                     checkOverlaps);               //overlaps checking
   
-  fCerenkovPMT = new G4PVPlacement(0,             //no rotation
-                    pmt1_position,                //at position
+  fCerenkovPMT = new G4PVPlacement(rotationMatrix,
+                    pmt1_position + delta_vect,   //at position
                     PMT_LogicalVolume,            //its logical volume
                     "Cherenkov PMT",              //its name
                     logicEnv,                     //its mother volume
@@ -180,8 +196,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     0,                            //copy number
                     checkOverlaps);               //overlaps checking
 
-  fScintillatorPMT = new G4PVPlacement(0,         //no rotation
-                    pmt2_position,                //at position
+  fScintillatorPMT = new G4PVPlacement(rotationMatrix,
+                    pmt2_position - delta_vect,   //at position
                     PMT_LogicalVolume,            //its logical volume
                     "Scintill. PMT",              //its name
                     logicEnv,                     //its mother volume
@@ -248,13 +264,9 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   G4Material* bgo_material = new G4Material("BismuthGermaniumOxygen Crystal", 7.13*g/cm3, bgo_basic);
 
   // Optical properties
-  const G4int n3 = 3;
+  //const G4int n3 = 3;
   const G4int n10 = 10;
   // energy = hPlanck * (light speed) / wavelength
-  G4double energies_cher_photons[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
-                                        hPlanck*c_light*meters_to_nanometers/400.*eV,  // intermediate energy
-                                        hPlanck*c_light*meters_to_nanometers/480.*eV}; // maximum emission at 480 nm
-
   G4double energies_photons[n10] = {hPlanck*c_light*meters_to_nanometers/300.*eV,
                                     hPlanck*c_light*meters_to_nanometers/350.*eV,
                                     hPlanck*c_light*meters_to_nanometers/400.*eV,
@@ -264,11 +276,16 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
                                     hPlanck*c_light*meters_to_nanometers/600.*eV,
                                     hPlanck*c_light*meters_to_nanometers/650.*eV,
                                     hPlanck*c_light*meters_to_nanometers/700.*eV,
-                                    hPlanck*c_light*meters_to_nanometers/750.*eV};
+                                    hPlanck*c_light*meters_to_nanometers/750.*eV,};
+  /*
+  G4double energies_cher_photons[n3] = {hPlanck*c_light*meters_to_nanometers/320.*eV,  // lower wavelength cutoff 320 nm
+                                        hPlanck*c_light*meters_to_nanometers/400.*eV,  // intermediate energy
+                                        hPlanck*c_light*meters_to_nanometers/480.*eV}; // maximum emission at 480 nm
+  */
 
   G4double rindex[n10]     = {2.75, 2.42, 2.30, 2.25, 2.21, 2.17, 2.16, 2.15, 2.15, 2.15}; // from BGO FermiLab .pptx
+  //G4double rindex[n10]     = {2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15}; // from BGO FermiLab .pptx
 
-  //G4double absorption[n3] = {100.*mm, 80.*mm, 10.*mm}; // from BGO FermiLab .pptx
   G4double absorption[n10] = {0.1*mm, 75.*mm, 82.*mm, 90.*mm, 100.*mm, 105.*mm, 112.*mm, 120.*mm, 125.*mm, 130.*mm};
 
   G4double scintillation_spectrum[n10] = {0, 0.1, 3.4, 11.5, 14.5, 10.8, 5.5, 3, 1.7, 0.7}; // from BGO FermiLab .pptx
@@ -280,17 +297,16 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   MPT->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
-  MPT->AddConstProperty("YIELDRATIO", 0.01);
   MPT->AddConstProperty("SCINTILLATIONYIELD", 8200./MeV);
 
   // properties that depend on energy
   MPT->AddProperty("RINDEX", energies_photons, rindex, n10)->SetSpline(true);
   MPT->AddProperty("ABSLENGTH", energies_photons, absorption, n10);
-  MPT->AddProperty("SLOWCOMPONENT", energies_photons, scintillation_spectrum, n10)->SetSpline(true);
+  MPT->AddProperty("FASTCOMPONENT", energies_photons, scintillation_spectrum, n10)->SetSpline(true);
 
   // bgo material
   bgo_material->SetMaterialPropertiesTable(MPT);
-  bgo_material->GetIonisation()->SetBirksConstant(0.126 * mm / MeV);  // from BGO FermiLab .pptx
+  bgo_material->GetIonisation()->SetBirksConstant(0.126 * mm / MeV); // from BGO FermiLab .pptx
 
   return bgo_material;
 }

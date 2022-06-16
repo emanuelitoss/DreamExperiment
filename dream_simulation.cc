@@ -69,7 +69,8 @@ int main(int argc,char** argv)
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
   // Detector construction
-  auto detConstruction = new DetectorConstruction();
+  G4double angle_degrees = 0;
+  auto detConstruction = new DetectorConstruction(angle_degrees);
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
 
@@ -96,7 +97,7 @@ int main(int argc,char** argv)
     G4String fileName = argv[1];
     UImanager->ApplyCommand(command+fileName);
   }
-  else { 
+  else {
     // interactive mode
     UImanager->ApplyCommand("/control/execute init_vis.mac");
     ui->SessionStart();

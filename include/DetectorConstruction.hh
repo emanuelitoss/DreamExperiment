@@ -43,7 +43,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
 
-    DetectorConstruction();
+    DetectorConstruction(G4double);
     virtual ~DetectorConstruction();
 
     virtual G4VPhysicalVolume* Construct();
@@ -54,6 +54,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     const G4VPhysicalVolume* GetPlasticScintillator_2() const;
     const G4VPhysicalVolume* GetCerenkovVolume() const;
     const G4VPhysicalVolume* GetScintillatorVolume() const;
+
+    G4double GetRadiusEnvelope() {return minimal_radius;}
 
     // return the scoring volume
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
@@ -66,6 +68,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* fPlasticScintillator_2;
     G4VPhysicalVolume* fCerenkovPMT;
     G4VPhysicalVolume* fScintillatorPMT;
+    G4double minimal_radius;
+    G4double rotation_angle;
 
   protected:
 
