@@ -31,6 +31,7 @@
 #define ActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
+#include "G4String.hh"
 
 class DetectorConstruction;
 
@@ -48,6 +49,10 @@ class ActionInitialization : public G4VUserActionInitialization
   private:
   
     DetectorConstruction* fDetConstruction = nullptr;
+
+  protected:
+
+    void InitializeOutputFile(G4String outputFile) const;
 };
 
 #endif
