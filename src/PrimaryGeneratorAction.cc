@@ -114,7 +114,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
     theta = acos(pow(G4UniformRand(),1./3));
   }while(theta > 0.7*radian); // contraint based on angular analysis
   
-  const double radius = fEnvelopeSphere->GetOuterRadius();
+  const double radius = fEnvelopeSphere->GetOuterRadius()/1.4;
 
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, -radius);
