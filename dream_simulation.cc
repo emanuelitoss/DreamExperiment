@@ -35,8 +35,6 @@
 #include "G4RunManagerFactory.hh"
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4OpticalPhysics.hh"
-#include "G4Cerenkov.hh"
-#include "G4Scintillation.hh"
 #include "G4UImanager.hh"
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
@@ -46,6 +44,7 @@
 #include "G4String.hh"
 #include "G4Types.hh"
 #include "Randomize.hh"
+#include "G4StepLimiterPhysics.hh"
 
 #include <time.h>
 
@@ -69,22 +68,34 @@ int main(int argc,char** argv)
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
   // Detector construction
-  G4double angle_degrees = 0;
+  G4double angle_degrees = 35.;
   auto detConstruction = new DetectorConstruction(angle_degrees);
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
 
+  /*
   // Physics list
-  runManager->SetUserInitialization(new PhysicsList());
-  
+  PhysicsList* physicslist = new PhysicsList();
+  // Step limiter
+  //physicslist->RegisterPhysics(new G4StepLimiterPhysics());
+  runManager->SetUserInitialization(physicslist);
+  */
+
+  G4VModularPhysicsList* physicsList = new FTFP_BERT;
+  physicsList->ReplacePhysics(new G4EmStandardPhysics_option4());
+  G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+  physicsList->RegisterPhysics(opticalPhysics);
+  physicsList->RegisterPhysics(new G4StepLimiterPhysics());
+  runManager->SetUserInitialization(physicsList);
+
   // User action initialization
   auto actionInitialization = new ActionInitialization(detConstruction);
   runManager->SetUserInitialization(actionInitialization);
   
   // Initialize visualization
-  G4VisManager* visManager = new G4VisExecutive;
+  // G4VisManager* visManager = new G4VisExecutive;
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-  // G4VisManager* visManager = new G4VisExecutive("Quiet");
+  G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
 
   // Get the pointer to the User Interface manager
@@ -104,8 +115,12 @@ int main(int argc,char** argv)
     delete ui;
   }
 
+  int execution_time_s = round((clock() - tStart)/CLOCKS_PER_SEC);
+  int remainder_s = execution_time_s%60;
+  int execution_time_min = (int)((execution_time_s-remainder_s)/60);
+
   std::cout << OBOLDWHITE << "Execution time of the code: "
-    << (double)(clock() - tStart)/CLOCKS_PER_SEC << " s" << ORESET << std::endl;
+    << execution_time_min << " min " << remainder_s << " s" << ORESET << std::endl;
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are

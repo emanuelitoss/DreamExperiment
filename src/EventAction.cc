@@ -108,7 +108,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
   }
   /*
   ofstream output;
-  output.open("../analysisDreamSimulation/goodangles.dat", ios::app);
+  output.open("../analysisDreamSimulation/goodangles.txt", ios::app);
   if ( IsInTrg1 && IsInTrg2 && IsInBGO ){
     output << 1 << endl;
   }else{

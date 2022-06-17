@@ -46,6 +46,7 @@
 #include "G4SteppingManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4Track.hh"
+#include "G4UnitsTable.hh"
 
 #include <vector>
 

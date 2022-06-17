@@ -63,7 +63,7 @@
 /vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
 # To select or override default colours (note: e+ is blue by default):
 # /vis/modeling/trajectories/list
-/vis/modeling/trajectories/drawByParticleID-0/set mu- white
+/vis/modeling/trajectories/drawByParticleID-0/set mu- cyan
 /vis/modeling/trajectories/drawByParticleID-0/set e- red
 /vis/modeling/trajectories/drawByParticleID-0/set gamma green
 

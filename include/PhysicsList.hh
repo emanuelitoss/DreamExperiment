@@ -30,13 +30,12 @@
 
 #include "globals.hh"
 #include "G4VUserPhysicsList.hh"
-
-class PhysicsListMessenger;
+#include "G4VModularPhysicsList.hh"
 
 class PhysicsList : public G4VUserPhysicsList
 {
   public:
-   PhysicsList();
+    PhysicsList();
     virtual ~PhysicsList();
 
     virtual void ConstructParticle();

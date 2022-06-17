@@ -36,6 +36,7 @@
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
+class G4UserLimits;
 
 /// Detector construction class to define materials and geometry.
 
@@ -68,8 +69,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* fPlasticScintillator_2;
     G4VPhysicalVolume* fCerenkovPMT;
     G4VPhysicalVolume* fScintillatorPMT;
+    
     G4double minimal_radius;
     G4double rotation_angle;
+    
+    G4UserLimits* fStepLimit;            // pointer to user step limits
 
   protected:
 

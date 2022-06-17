@@ -107,12 +107,12 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   fParticleGun->SetParticleEnergy(3.*GeV);
 
   // generation of radnomic angles
-  double phi = G4UniformRand() * 2 * M_PI;
+  double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
   do{
     theta = GetRandomicTheta3CosCos();
     // theta = acos(pow(G4UniformRand(),1./3));
-  }while(theta>0.5);
+  }while(theta > 0.7*radian); // contraint based on angular analysis
   
   const double radius = fEnvelopeSphere->GetOuterRadius();
 
@@ -126,19 +126,16 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // tangent plane position generation
   double position_x;
   double position_y;
-  //do{
-    position_x = (G4UniformRand() - 0.5) * 2 * radius;// * 0.5;
-    position_y = (G4UniformRand() - 0.5) * 2 * radius;// * 0.5;
-  //}while(position_x*position_x + position_y*position_y > radius*radius);
-  //position_x*=0.4;
-  //position_y*=0.4;
+
+  position_x = (G4UniformRand() - 0.5) * 2 * radius * 0.5;
+  position_y = (G4UniformRand() - 0.5) * 2 * radius * 0.5;
 
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, radius);
   Position_Beam->rotateY(theta);
   Position_Beam->rotateZ(phi);
   
   // writing in output file
-  /*
+  
   ofstream* output = new ofstream();
   output->open(fileName, ios::app);
   if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
@@ -146,7 +143,7 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
   Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << "\t" << endl;;
   output->close();
-  */
+  
  
   // set position of the particle
   fParticleGun->SetParticlePosition(*Position_Beam);

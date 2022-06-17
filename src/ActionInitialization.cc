@@ -55,7 +55,7 @@ void ActionInitialization::BuildForMaster() const {
 void ActionInitialization::Build() const {
 
   //Writing first line in an output file
-  G4String outputFile = "../analysisDreamSimulation/positions.dat";
+  G4String outputFile = "../analysisDreamSimulation/positions.txt";
   //this->InitializeOutputFile(outputFile);
 
   SetUserAction(new PrimaryGeneratorAction(outputFile));
