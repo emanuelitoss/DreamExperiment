@@ -47,6 +47,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "G4UserLimits.hh"
+#include "G4OpticalSurface.hh"
+#include "G4LogicalBorderSurface.hh"
 
 const double hPlanck = 4.135655e-15;
 const double c_light = 3e+8;
@@ -133,8 +135,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
     new G4LogicalVolume(solidEnv,            //its solid
                         envelope_material,   //its material
                         "Envelope");         //its name
-               
-  new G4PVPlacement(0,                       //no rotation
+
+  G4VPhysicalVolume* physEnvelope = new G4PVPlacement(0,                       //no rotation
                     G4ThreeVector(),         //at (0,0,0)
                     logicEnv,                //its logical volume
                     "Envelope",              //its name
@@ -215,6 +217,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     0,                            //copy number
                     checkOverlaps);               //overlaps checking
 
+  // optical properties of BGO
+  OpticalSurfaceBGO(fBGOcrystal, physEnvelope);
+
+
   //
   // Plastic scintillator
   //
@@ -259,6 +265,52 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   return physWorld;
 }
 
+// optical surface of BGO
+void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysicalVolume* Envelope_PV) const {
+
+  G4OpticalSurface* opBGOSurface = new G4OpticalSurface("BGO Surface");
+  // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.6/html/TrackingAndPhysics/physicsProcess.html#boundary-process
+  opBGOSurface->SetType(dielectric_dielectric); // dielectric_LUTDAVIS
+  opBGOSurface->SetModel(unified);  // fig 1.7 (link above) or glisur, DAVIS
+  opBGOSurface->SetFinish(polishedair); // Rough_LUT, Polished_LUT
+
+  G4LogicalBorderSurface* LogicalBGOSurface = new G4LogicalBorderSurface(
+    "WaterSurface", BGO_PV, Envelope_PV, opBGOSurface);
+  
+  G4OpticalSurface* opticalSurface = dynamic_cast<G4OpticalSurface*>(
+    LogicalBGOSurface->GetSurface(BGO_PV, Envelope_PV)->GetSurfaceProperty());
+  if(opticalSurface)
+    opticalSurface->DumpInfo();
+
+  // Generate & Add Material Properties Table attached to the optical surface
+  // energy = hPlanck * (light speed) / wavelength
+  // reference for reflectivity https://aip.scitation.org/doi/10.1063/1.3272909
+  // reference for transmittance https://www.researchgate.net/publication/264828576_The_Radiation_Hard_BGO_Crystals_for_Astrophysics_Applications
+  G4int n10 = 10;
+  G4int n6 = 6;
+  G4double energies_photons[] = {2.*eV, 2.5*eV, 3.*eV, 3.5*eV, 4.*eV,
+                                4.5*eV, 4.75*eV, 4.9*eV, 5.*eV, 5.4*eV};
+  G4double reflectivity[] = { 0.125, 0.13, 0.14, 0.155, 0.175,
+                              0.25, 0.29, 0.243, 0.21, 0.22};
+  G4double energies_photons_bis[] = { hPlanck*c_light*meters_to_nanometers/310.*eV,
+                                      hPlanck*c_light*meters_to_nanometers/350.*eV,
+                                      hPlanck*c_light*meters_to_nanometers/400.*eV,
+                                      hPlanck*c_light*meters_to_nanometers/500.*eV,
+                                      hPlanck*c_light*meters_to_nanometers/600.*eV,
+                                      hPlanck*c_light*meters_to_nanometers/700.*eV};                      
+  G4double transmittance[] = {0.05, 0.70, 0.78, 0.79, 0.80, 0.80};
+
+  G4MaterialPropertiesTable* ST2 = new G4MaterialPropertiesTable();
+
+  ST2->AddProperty("REFLECTIVITY", energies_photons, reflectivity, n10);
+  ST2->AddProperty("TRANSMITTANCE", energies_photons_bis, transmittance, n6);
+  // ST2->AddProperty("EFFICIENCY", - , - , - ); but R+T+A = 1. Then efficiency is detemined.
+  ST2->DumpTable();
+  opBGOSurface->SetMaterialPropertiesTable(ST2);
+
+}
+
+// BGO - material
 G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   
   // Get nist material manager
@@ -290,6 +342,7 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
 
   // from BGO FermiLab .pptx
   G4double rindex[n10] = {2.75, 2.42, 2.30, 2.25, 2.21, 2.17, 2.16, 2.15, 2.15, 2.15};
+  //G4double rindex[n10] = {2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15};
   G4double absorption[n10] = {0.1*mm, 75.*mm, 82.*mm, 90.*mm, 100.*mm, 105.*mm, 112.*mm, 120.*mm, 125.*mm, 130.*mm};
   G4double scintillation_spectrum[n10] = {0, 0.1, 3.4, 11.5, 14.5, 10.8, 5.5, 3, 1.7, 0.7};
 
@@ -314,6 +367,7 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
   return bgo_material;
 }
 
+// Air - material
 G4Material* DetectorConstruction::CreateOpticalAir() const {
   
   // Get nist material manager
@@ -342,6 +396,7 @@ G4Material* DetectorConstruction::CreateOpticalAir() const {
   return air_optical;
 }
 
+// Birosilicate glass - material
 G4Material* DetectorConstruction::CreatePyrex() const {
   
   // Get nist material manager
