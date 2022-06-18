@@ -110,8 +110,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
   do{
-    theta = GetRandomicTheta3CosCos();
-    // theta = acos(pow(G4UniformRand(),1./3));
+    //theta = GetRandomicTheta3CosCos();
+    theta = acos(pow(G4UniformRand(),1./3));
   }while(theta > 0.7*radian); // contraint based on angular analysis
   
   const double radius = fEnvelopeSphere->GetOuterRadius();
