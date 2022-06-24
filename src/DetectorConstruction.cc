@@ -147,7 +147,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   
   // limit stepLength to 4.8cm in order to optimize rejecting logic of non-detected events 
   // (see SteppingAction.cc SteppingAction::EstinguishParticleIfNotTrigger )
-  G4double maxStep = 4.5*cm;
+  G4double maxStep = 4.8*cm;
   fStepLimit = new G4UserLimits(maxStep);
   logicEnv->SetUserLimits(fStepLimit);
 
@@ -287,6 +287,9 @@ void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysi
   G4OpticalSurface* opticalSurface = dynamic_cast<G4OpticalSurface*>(
     LogicalBGOSurface->GetSurface(BGO_PV, Envelope_PV)->GetSurfaceProperty());
 
+  if(opticalSurface)
+    opticalSurface->DumpInfo();
+
   // Generate & Add Material Properties Table attached to the optical surface
   // energy = hPlanck * (light speed) / wavelength
   // reference for reflectivity https://aip.scitation.org/doi/10.1063/1.3272909
@@ -310,6 +313,7 @@ void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysi
   SurfaceTable->AddProperty("REFLECTIVITY", energies_photons, reflectivity, n10);
   SurfaceTable->AddProperty("TRANSMITTANCE", energies_photons_bis, transmittance, n6);
   // SurfaceTable->AddProperty("TRANSMITTANCE", - , - , - ); but R+T+A = 1. Then efficiency is detemined.
+  SurfaceTable->DumpTable();
   opBGOSurface->SetMaterialPropertiesTable(SurfaceTable);
 
 }
