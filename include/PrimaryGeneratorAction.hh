@@ -66,6 +66,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4Sphere* fEnvelopeSphere;
     // output file
     G4String fileName;
+    G4bool fUseRandomicGeneration;
 
     // to get a random distribution proportional to cos^2
     G4double GetRandomicTheta3CosCos();
