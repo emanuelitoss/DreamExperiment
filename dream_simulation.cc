@@ -68,7 +68,7 @@ int main(int argc,char** argv)
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
   // Detector construction
-  G4double angle_degrees = 35.;
+  G4double angle_degrees = 30.;
   auto detConstruction = new DetectorConstruction(angle_degrees);
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
