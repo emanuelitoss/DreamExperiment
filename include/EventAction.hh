@@ -67,6 +67,9 @@ class EventAction : public G4UserEventAction
   void AddEdepBGOCerenkov(G4double edep);
   void AddEdepBGOScint(G4double edep);
 
+  void AddProducedCerenkovPhoton() { ++Nproduced_Cerenkov; }
+  void AddProducedScintillationPhoton() { ++Nproduced_Scintillation; }
+
   void PrintStatus();
 
   private:
@@ -82,6 +85,8 @@ class EventAction : public G4UserEventAction
   G4double fEdep_BGO_Scintillation;
   G4int Nphotons_Cerenkov;
   G4int Nphotons_Scint;
+  G4int Nproduced_Cerenkov;
+  G4int Nproduced_Scintillation;
   
   // boolean variables to check if the particle passes through physical volumes
   G4bool IsInBGO = false;

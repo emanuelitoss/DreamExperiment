@@ -145,9 +145,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
   
-  // limit stepLength to 2cm in order to optimize rejecting logic of non-detected events 
+  // limit stepLength to 4.8cm in order to optimize rejecting logic of non-detected events 
   // (see SteppingAction.cc SteppingAction::EstinguishParticleIfNotTrigger )
-  G4double maxStep = 4.*cm;
+  G4double maxStep = 4.5*cm;
   fStepLimit = new G4UserLimits(maxStep);
   logicEnv->SetUserLimits(fStepLimit);
 
@@ -177,6 +177,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
     new G4LogicalVolume(PMTsShape,                               //its solid
                         borosilicate,                            //its material
                         "PMT made up of borosilicate glass");    //its name
+
+  // in order to ensure at least one step in the PMT
+  PMT_LogicalVolume->SetUserLimits(new G4UserLimits(shape_PMT_Y/2));
 
   // rotation matrix
   G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
@@ -219,7 +222,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 
   // optical properties of BGO
   OpticalSurfaceBGO(fBGOcrystal, physEnvelope);
-
+  OpticalSurfaceBGO(fBGOcrystal, fCerenkovPMT);
+  OpticalSurfaceBGO(fBGOcrystal, fScintillatorPMT);
+  OpticalSurfaceBGO(fScintillatorPMT, physEnvelope);
+  OpticalSurfaceBGO(fScintillatorPMT, physEnvelope);
 
   //
   // Plastic scintillator
@@ -270,17 +276,16 @@ void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysi
 
   G4OpticalSurface* opBGOSurface = new G4OpticalSurface("BGO Surface");
   // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.6/html/TrackingAndPhysics/physicsProcess.html#boundary-process
-  opBGOSurface->SetType(dielectric_dielectric); // dielectric_LUTDAVIS
-  opBGOSurface->SetModel(unified);  // fig 1.7 (link above) or glisur, DAVIS
-  opBGOSurface->SetFinish(polishedair); // Rough_LUT, Polished_LUT
+  opBGOSurface->SetType(dielectric_LUTDAVIS); // dielectric_LUTDAVIS, dielectric_dielectric
+  opBGOSurface->SetModel(DAVIS);  // fig 1.7 (link above) or glisur, DAVIS, unified
+  opBGOSurface->SetFinish(Polished_LUT); // Rough_LUT, Polished_LUT, ground
+  opBGOSurface->SetSigmaAlpha(0.05);
 
   G4LogicalBorderSurface* LogicalBGOSurface = new G4LogicalBorderSurface(
-    "WaterSurface", BGO_PV, Envelope_PV, opBGOSurface);
+    "BGO Surface", BGO_PV, Envelope_PV, opBGOSurface);
   
   G4OpticalSurface* opticalSurface = dynamic_cast<G4OpticalSurface*>(
     LogicalBGOSurface->GetSurface(BGO_PV, Envelope_PV)->GetSurfaceProperty());
-  if(opticalSurface)
-    opticalSurface->DumpInfo();
 
   // Generate & Add Material Properties Table attached to the optical surface
   // energy = hPlanck * (light speed) / wavelength
@@ -288,25 +293,24 @@ void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysi
   // reference for transmittance https://www.researchgate.net/publication/264828576_The_Radiation_Hard_BGO_Crystals_for_Astrophysics_Applications
   G4int n10 = 10;
   G4int n6 = 6;
-  G4double energies_photons[] = {2.*eV, 2.5*eV, 3.*eV, 3.5*eV, 4.*eV,
-                                4.5*eV, 4.75*eV, 4.9*eV, 5.*eV, 5.4*eV};
+  G4double energies_photons[] = { 2.*eV, 2.5*eV, 3.*eV, 3.5*eV, 4.*eV,
+                                4.5*eV, 4.75*eV, 4.9*eV, 5.*eV, 5.4*eV };
   G4double reflectivity[] = { 0.125, 0.13, 0.14, 0.155, 0.175,
-                              0.25, 0.29, 0.243, 0.21, 0.22};
+                              0.25, 0.29, 0.243, 0.21, 0.22 };
   G4double energies_photons_bis[] = { hPlanck*c_light*meters_to_nanometers/310.*eV,
                                       hPlanck*c_light*meters_to_nanometers/350.*eV,
                                       hPlanck*c_light*meters_to_nanometers/400.*eV,
                                       hPlanck*c_light*meters_to_nanometers/500.*eV,
                                       hPlanck*c_light*meters_to_nanometers/600.*eV,
-                                      hPlanck*c_light*meters_to_nanometers/700.*eV};                      
-  G4double transmittance[] = {0.05, 0.70, 0.78, 0.79, 0.80, 0.80};
+                                      hPlanck*c_light*meters_to_nanometers/700.*eV };                      
+  G4double transmittance[] = { 0.08, 0.70, 0.78, 0.79, 0.80, 0.80 };
 
-  G4MaterialPropertiesTable* ST2 = new G4MaterialPropertiesTable();
+  G4MaterialPropertiesTable* SurfaceTable = new G4MaterialPropertiesTable();
 
-  ST2->AddProperty("REFLECTIVITY", energies_photons, reflectivity, n10);
-  ST2->AddProperty("TRANSMITTANCE", energies_photons_bis, transmittance, n6);
-  // ST2->AddProperty("EFFICIENCY", - , - , - ); but R+T+A = 1. Then efficiency is detemined.
-  ST2->DumpTable();
-  opBGOSurface->SetMaterialPropertiesTable(ST2);
+  SurfaceTable->AddProperty("REFLECTIVITY", energies_photons, reflectivity, n10);
+  SurfaceTable->AddProperty("TRANSMITTANCE", energies_photons_bis, transmittance, n6);
+  // SurfaceTable->AddProperty("TRANSMITTANCE", - , - , - ); but R+T+A = 1. Then efficiency is detemined.
+  opBGOSurface->SetMaterialPropertiesTable(SurfaceTable);
 
 }
 

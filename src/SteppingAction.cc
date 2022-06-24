@@ -156,6 +156,20 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
       primary->SetKineticEnergy(0.);
       primary->SetTrackStatus(fStopAndKill);
     }
+  } else {
+    // if we are in the BGO
+    if(step->GetPreStepPoint()->GetPhysicalVolume() == fDetConstruction->GetBGOcrystal()){
+    const std::vector <const G4Track*> * secondaries = step->GetSecondaryInCurrentStep();
+      // loop over secondaries
+      for( auto sec : *secondaries ){
+
+        G4String creator_process = sec->GetCreatorProcess()->GetProcessName();
+
+        // if it is cherenkov
+        if(creator_process.compare("Cerenkov")) fEventAction->AddProducedCerenkovPhoton();
+        else if(creator_process.compare("Scintillation")) fEventAction->AddProducedScintillationPhoton();
+      }
+    }
   }
 
   // check if we are in scoring volume
