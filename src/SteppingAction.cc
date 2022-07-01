@@ -165,16 +165,15 @@ void SteppingAction::UserSteppingAction(const G4Step* step){
 
         G4String creator_process = sec->GetCreatorProcess()->GetProcessName();
 
-        // if it is cherenkov
-        if(creator_process.compare("Cerenkov")) fEventAction->AddProducedCerenkovPhoton();
-        else if(creator_process.compare("Scintillation")) fEventAction->AddProducedScintillationPhoton();
+        if(!creator_process.compare("Cerenkov")) fEventAction->AddProducedCerenkovPhoton();
+        else if(!creator_process.compare("Scintillation")) fEventAction->AddProducedScintillationPhoton();
       }
     }
   }
 
-  // check if we are in scoring volume
+  // check if we are not in scoring volume
   if (volume != fScoringVolume) return;
-
+  // else score
   fEventAction->AddEdep(edepStep);
 
 }
