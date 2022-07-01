@@ -63,17 +63,21 @@ int main(int argc,char** argv)
 
   // Optionally: choose a different Random engine...
   // G4Random::setTheEngine(new CLHEP::MTwistEngine);
-  
+  // G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  double myseed = round(tStart);
+  G4Random::setTheSeed(myseed);
+  std::cout << OBOLDBLUE << tStart << ORESET << std::endl;
+
   // Construct the default run manager
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
   // Detector construction
-  G4double angle_degrees = 30.;
+  G4double angle_degrees = 22.5;
   auto detConstruction = new DetectorConstruction(angle_degrees);
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
 
-  /*
+  /* our physics list
   // Physics list
   PhysicsList* physicslist = new PhysicsList();
   // Step limiter
@@ -108,7 +112,7 @@ int main(int argc,char** argv)
     G4String fileName = argv[1];
     UImanager->ApplyCommand(command+fileName);
   }
-  else {
+  else{
     // interactive mode
     UImanager->ApplyCommand("/control/execute init_vis.mac");
     ui->SessionStart();
