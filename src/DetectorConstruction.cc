@@ -35,6 +35,7 @@
 #include "G4RunManager.hh" 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
+#include "G4ThreeVector.hh"
 #include "G4Cons.hh"
 #include "G4Orb.hh"
 #include "G4Sphere.hh"
@@ -49,6 +50,7 @@
 #include "G4UserLimits.hh"
 #include "G4OpticalSurface.hh"
 #include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
 
 const double hPlanck = 4.135655e-15;
 const double c_light = 3e+8;
@@ -87,7 +89,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   const G4double shape_PMT_Y = 0.5*cm; // the order of absorption length in BG crystals
   
   // minimal radius such that the experiment is circumscribed in a sphere
-  // we willl use minimal radius + 30%
+  // we willl use minimal radius + 40%
   G4double Yheight = 2*shape_PMT_Y + shape_bgoY;
   G4double H = 2 * shape_plasticZ + distance_BGOscintillators + distance_scintillators;
   minimal_radius = (4 * H*H + Yheight*Yheight) / (8*H);
@@ -222,10 +224,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 
   // optical properties of BGO
   OpticalSurfaceBGO(fBGOcrystal, physEnvelope);
-  OpticalSurfaceBGO(fBGOcrystal, fCerenkovPMT);
-  OpticalSurfaceBGO(fBGOcrystal, fScintillatorPMT);
-  OpticalSurfaceBGO(fScintillatorPMT, physEnvelope);
-  OpticalSurfaceBGO(fScintillatorPMT, physEnvelope);
+  OpticalSurfaceBGO_PMT(fBGOcrystal, fCerenkovPMT);
+  OpticalSurfaceBGO_PMT(fBGOcrystal, fScintillatorPMT);
 
   //
   // Plastic scintillator
@@ -306,13 +306,52 @@ void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysi
                                       hPlanck*c_light*meters_to_nanometers/500.*eV,
                                       hPlanck*c_light*meters_to_nanometers/600.*eV,
                                       hPlanck*c_light*meters_to_nanometers/700.*eV };                      
-  G4double transmittance[] = { 0.08, 0.70, 0.78, 0.79, 0.80, 0.80 };
+  //G4double transm[] = { 0.1, 0.70, 0.78, 0.79, 0.80, 0.80 };
+  G4double transm[] = { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
 
   G4MaterialPropertiesTable* SurfaceTable = new G4MaterialPropertiesTable();
 
   SurfaceTable->AddProperty("REFLECTIVITY", energies_photons, reflectivity, n10);
-  SurfaceTable->AddProperty("TRANSMITTANCE", energies_photons_bis, transmittance, n6);
-  // SurfaceTable->AddProperty("TRANSMITTANCE", - , - , - ); but R+T+A = 1. Then efficiency is detemined.
+  SurfaceTable->AddProperty("TRANSMITTANCE", energies_photons_bis, transm, n6);
+  
+  SurfaceTable->DumpTable();
+  opBGOSurface->SetMaterialPropertiesTable(SurfaceTable);
+
+}
+
+// optical between of BGO and PMTs
+void DetectorConstruction::OpticalSurfaceBGO_PMT(G4VPhysicalVolume* BGO_PV, G4VPhysicalVolume* TheOtherPV) const {
+
+  G4OpticalSurface* opBGOSurface = new G4OpticalSurface("BGO Surface");
+  // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.6/html/TrackingAndPhysics/physicsProcess.html#boundary-process
+  opBGOSurface->SetType(dielectric_LUTDAVIS);
+  opBGOSurface->SetModel(DAVIS);
+  opBGOSurface->SetFinish(PolishedESRGrease_LUT); // Using optical grease between PMTs and BGO
+  opBGOSurface->SetSigmaAlpha(0.05);
+
+  G4LogicalBorderSurface* LogicalBGOSurface = new G4LogicalBorderSurface(
+    "BGO Surface", BGO_PV, TheOtherPV, opBGOSurface);
+  
+  G4OpticalSurface* opticalSurface = dynamic_cast<G4OpticalSurface*>(
+    LogicalBGOSurface->GetSurface(BGO_PV, TheOtherPV)->GetSurfaceProperty());
+
+  if(opticalSurface) opticalSurface->DumpInfo();
+
+  // Generate & Add Material Properties Table attached to the optical surface
+  // energy = hPlanck * (light speed) / wavelength
+  // reference for reflectivity https://aip.scitation.org/doi/10.1063/1.3272909
+  // reference for transmittance https://www.researchgate.net/publication/264828576_The_Radiation_Hard_BGO_Crystals_for_Astrophysics_Applications
+  G4int n10 = 10;
+  // G4int n6 = 6;
+  G4double energies_photons[] = { 2.*eV, 2.5*eV, 3.*eV, 3.5*eV, 4.*eV,
+                                4.5*eV, 4.75*eV, 4.9*eV, 5.*eV, 5.4*eV };
+  G4double reflectivity[] = { 0.125, 0.13, 0.14, 0.155, 0.175,
+                              0.25, 0.29, 0.243, 0.21, 0.22 };   
+
+  G4MaterialPropertiesTable* SurfaceTable = new G4MaterialPropertiesTable();
+
+  SurfaceTable->AddProperty("REFLECTIVITY", energies_photons, reflectivity, n10);
+  
   SurfaceTable->DumpTable();
   opBGOSurface->SetMaterialPropertiesTable(SurfaceTable);
 
@@ -350,16 +389,14 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
 
   // from BGO FermiLab .pptx
   G4double rindex[n10] = {2.75, 2.42, 2.30, 2.25, 2.21, 2.17, 2.16, 2.15, 2.15, 2.15};
-  //G4double rindex[n10] = {2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15, 2.15};
   G4double absorption[n10] = {0.1*mm, 75.*mm, 82.*mm, 90.*mm, 100.*mm, 105.*mm, 112.*mm, 120.*mm, 125.*mm, 130.*mm};
-  G4double scintillation_spectrum[n10] = {0, 0.1, 3.4, 11.5, 14.5, 10.8, 5.5, 3, 1.7, 0.7};
+  G4double scintillation_spectrum[n10] = {0, 0.1/100, 3.4/100, 11.5/100, 14.5/100, 10.8/100, 5.5/100, 3/100, 1.7/100, 0.7/100}; // percent
 
   // new instance of Material Properties
   G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
  
-  // property independent of energy
+  // properties independent of energy
   MPT->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
-  MPT->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
   MPT->AddConstProperty("RESOLUTIONSCALE", 1.0);
   MPT->AddConstProperty("SCINTILLATIONYIELD", 8200./MeV);
 
@@ -370,7 +407,7 @@ G4Material* DetectorConstruction::CreateBismuthGermaniumOxygen() const {
 
   // bgo material
   bgo_material->SetMaterialPropertiesTable(MPT);
-  bgo_material->GetIonisation()->SetBirksConstant(0.126 * mm / MeV); // from BGO FermiLab .pptx
+  bgo_material->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
 
   return bgo_material;
 }

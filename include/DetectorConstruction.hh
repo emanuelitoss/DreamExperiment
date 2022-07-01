@@ -86,6 +86,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // set the optical surface of BGO
     void OpticalSurfaceBGO(G4VPhysicalVolume*, G4VPhysicalVolume*) const;
+    void OpticalSurfaceBGO_PMT(G4VPhysicalVolume*, G4VPhysicalVolume*) const;
 
 };
 
