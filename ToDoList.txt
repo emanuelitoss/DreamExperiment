@@ -30,6 +30,8 @@ TO DO LIST
 	(V) anziché usare la tripla coincidenza con il BGO, si usa la tripla coincidenza con i PMTs
 	(V) ammazzare i fotoni dopo la prima lettura per evitare di fare lo store due volte
 
+(V) Inserimento di superfici ottiche con parametri di riflessione interna, trasmissione ed efficienza (o assorbimento).
+
 ----- Estrapolazione dati -----
 
 (V) Estrazione dei dati
@@ -42,8 +44,9 @@ TO DO LIST
 
 ----- Analisi dati e comparazione con esperimento -----
 
-(~V) Verificare che, a X gradi, il rate di eventi rilevati è lo stesso del lab
-(X) Rapporto C/S a vari angoli
+(V) Verificare che, a 0 gradi, il rate di eventi rilevati è lo stesso del lab
+
+(V) Rapporto C/S a vari angoli
 
 ----- optional (per ora) ------
 

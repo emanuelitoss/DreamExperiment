@@ -95,20 +95,20 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
     // output
     ofstream output;
-    output.open("../analysisDreamSimulation/energies.txt", ios::app);
+    output.open("../datasets/Total/_1822_5_degrees.txt", ios::app);
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     output << setw(7)
       << fEdep << "\t"
       << fEdep_BGO << "\t"
       << fEdep_Scint1 << "\t"
       << fEdep_Scint2 << "\t"
-      << fEdep_BGO_Cherenkov << "\t" 
+      << fEdep_BGO_Cherenkov << "\t"
       << fEdep_BGO_Scintillation << "\t"
       << Nphotons_Cerenkov << "\t"
       << Nphotons_Scint << endl;
     output.close();
-    
-    output.open("../analysisDreamSimulation/numbers.txt", ios::app);
+
+    output.open("../datasets/Total/numbers1822_5.txt", ios::app);
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     output << setw(7)
       << Nphotons_Cerenkov << "\t"
@@ -116,10 +116,16 @@ void EventAction::EndOfEventAction(const G4Event* event){
       << Nphotons_Scint << "\t"
       << Nproduced_Scintillation << endl;
     output.close();
-
-
+    
   }
-  
+  /*
+  ofstream output;
+  output.open("../analysisDreamSimulation/good_angles.txt", ios::app);
+  if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
+  if(IsInTrg1 && IsInTrg2 && IsInBGO) output << 1 << endl;
+  else output << 0 << endl;
+  output.close();
+  */
 }
 
 void EventAction::PrintStatus(){
@@ -136,7 +142,6 @@ void EventAction::PrintStatus(){
   << "\tTrigger1:\t" << fEdep_Scint1 << "\n"
   << "\tTrigger1:\t" << fEdep_Scint2 << "\n"
   << ORESET << std::endl;
-
 }
 
 void EventAction::AddEdep(G4double edep){

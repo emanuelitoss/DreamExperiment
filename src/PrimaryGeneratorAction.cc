@@ -52,7 +52,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4String outputName)
   fEnvelopeSphere(0)
 {
 
-  fUseRandomicGeneration = true;
+  fUseRandomicGeneration = false;
 
   this->setOutput(outputName);
   G4int n_particle = 1;
@@ -82,7 +82,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   if ( fEnvelopeSphere ) {
-    envSizeR = fEnvelopeSphere->GetOuterRadius();
+    envSizeR = fEnvelopeSphere->GetOuterRadius()/1.4;
   }
   else {
     G4ExceptionDescription msg;
@@ -112,12 +112,11 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // generation of randomic angles
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
-  do{
-    theta = acos(pow(G4UniformRand(),1./3));
-    // theta = GetRandomicTheta3CosCos();
-  }while(theta > 0.7*radian); // contraint based on angular analysis
+  theta = acos(pow(G4UniformRand(),1./3));
+  // theta = GetRandomicTheta3CosCos();
   
-  const double radius = fEnvelopeSphere->GetOuterRadius();
+  // in order to correct the envelope radius (+40% with respect minimal radius)
+  const double radius = fEnvelopeSphere->GetOuterRadius()/1.4;
 
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, -radius);
@@ -130,8 +129,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   double position_x;
   double position_y;
 
-  position_x = (G4UniformRand() - 0.5) * 2 * radius * 0.5;
-  position_y = (G4UniformRand() - 0.5) * 2 * radius * 0.5;
+  position_x = (G4UniformRand() - 0.5) * 2 * radius;
+  position_y = (G4UniformRand() - 0.5) * 2 * radius;
 
   G4ThreeVector* Position_Beam = new G4ThreeVector(position_x, position_y, radius);
   Position_Beam->rotateY(theta);

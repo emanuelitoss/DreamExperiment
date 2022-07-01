@@ -68,8 +68,6 @@ RunAction::RunAction()
   G4cout << "Using " << analysisManager->GetType() << G4endl;
 
   // Create directories
-  //analysisManager->SetHistoDirectoryName("histograms");
-  //analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(0);
   analysisManager->SetNtupleMerging(true);
   // Note: merging ntuples is available only with Root output
@@ -78,10 +76,10 @@ RunAction::RunAction()
   analysisManager->CreateH1("EnergyBGO","Energy deposited in BGO crystal", 800, 0., 100, "MeV");
   analysisManager->CreateH1("EnergyPlastic1","Energy deposited in first plastic scintillator", 800, 0., 100*MeV);
   analysisManager->CreateH1("EnergyPlastic2","Energy deposited in second plastic scintillator", 800, 0., 100*MeV);
-  analysisManager->CreateH1("Cherenkov","Cherenkov energy production in BGO", 800, 0., 100*keV);
-  analysisManager->CreateH1("Scintillation","Scintillation energy production in BGO", 800, 0., 100*keV);
-  analysisManager->CreateH1("Cherenkov number","Number of Cherenkov photons", 800, 0., 1000);
-  analysisManager->CreateH1("Scintillation number","Number of scintillation photons", 800, 0., 1000);
+  analysisManager->CreateH1("Cherenkov","Cherenkov energy production in BGO", 200, 0., 100*keV);
+  analysisManager->CreateH1("Scintillation","Scintillation energy production in BGO", 200, 0., 100*keV);
+  analysisManager->CreateH1("Cherenkov number","Number of Cherenkov photons", 200, 0., 1000);
+  analysisManager->CreateH1("Scintillation number","Number of scintillation photons", 200, 0., 80000);
   // Creating ntuple
   analysisManager->CreateNtuple("dreamData", "EnengyDeposit");
   analysisManager->CreateNtupleDColumn("EnergyInBGO");
@@ -125,11 +123,17 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   G4String fileName = "../analysisDreamSimulation/data_dreamExperiment.root";
   analysisManager->OpenFile(fileName);
 
-  // initialization of output file
+  // initialization of output files
   ofstream output;
-  output.open("../analysisDreamSimulation/energies.txt");
+  output.open("../datasets/Total/_1822_5_degrees.txt");
   output << "# Energy losses in the three detectors (in MeV):" << "\n"
     << "# Total\tBGO\tPlastic_1\tPLastic_2\tCherenkovBGO\tScintillationBGO\tNCherenkov\tNScint"
+    << "\n" << std::endl;
+  output.close();
+
+  output.open("../datasets/Total/numbers1822_5.txt");
+  output << "# Numbers of:" << "\n"
+    << "# Detected C\tProduced C\tDetected S\tProduced S"
     << "\n" << std::endl;
   output.close();
 
