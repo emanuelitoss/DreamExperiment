@@ -52,7 +52,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4String outputName)
   fEnvelopeSphere(0)
 {
 
-  fUseRandomicGeneration = false;
+  fUseRandomicGeneration = true;
 
   this->setOutput(outputName);
   G4int n_particle = 1;
@@ -82,7 +82,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   if ( fEnvelopeSphere ) {
-    envSizeR = fEnvelopeSphere->GetOuterRadius()/1.4;
+    // in order to correct the envelope radius (+40% with respect minimal radius)
+    envSizeR = fEnvelopeSphere->GetOuterRadius();///1.4;
   }
   else {
     G4ExceptionDescription msg;
@@ -112,17 +113,18 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // generation of randomic angles
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
-  theta = acos(pow(G4UniformRand(),1./3));
-  // theta = GetRandomicTheta3CosCos();
-  
+  //do{
+    theta = acos(pow(G4UniformRand(),1./3));
+  //} while(theta>0.6);
+
   // in order to correct the envelope radius (+40% with respect minimal radius)
-  const double radius = fEnvelopeSphere->GetOuterRadius()/1.4;
+  const double radius = fEnvelopeSphere->GetOuterRadius();///1.4;
 
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, -radius);
   Direction_Beam->rotateY(theta);
   Direction_Beam->rotateZ(phi);
-  if(fUseRandomicGeneration)  fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
+  if(fUseRandomicGeneration) fParticleGun->SetParticleMomentumDirection(*Direction_Beam);
   else fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,-1));
   
   // tangent plane position generation
@@ -141,11 +143,8 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   ofstream* output = new ofstream();
   output->open(fileName, ios::app);
   if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
-  *output << setw(7) << position_x << "\t" << position_y << "\t" << Direction_Beam->theta() << "\t" << Direction_Beam->phi()+M_PI << "\t" <<
-  Direction_Beam->getX() << "\t" << Direction_Beam->getY() << "\t" << Direction_Beam->getZ() << "\t" <<
-  Position_Beam->getX() << "\t" << Position_Beam->getY() << "\t" << Position_Beam->getZ() << "\t" << endl;;
-  output->close();
-  */
+  *output << setw(7) << position_x << "\t" << position_y << "\t" << theta+M_PI << "\t" << phi << endl;;
+  output->close();*/
  
   // set position of the particle
   if(fUseRandomicGeneration)  fParticleGun->SetParticlePosition(*Position_Beam);
@@ -154,16 +153,5 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   //delete output;
   delete Position_Beam;
   delete Direction_Beam;
-
-}
-
-G4double PrimaryGeneratorAction::GetRandomicTheta3CosCos(){
-
-  G4double theta, sample_f;
-  do{
-    theta = M_PI*0.5*G4UniformRand();
-    sample_f = 3*G4UniformRand();
-  } while (sample_f > 3*cos(theta)*cos(theta));
-  return theta;
 
 }
