@@ -1,7 +1,0 @@
-### Tempo tipico di acquisizione dati in laboratorio:
-    in un range 72h - 92h
-
-### Angoli di inclinazione:
-    -40, -30 , -15, 0, 15, 30, 40
-
-    
