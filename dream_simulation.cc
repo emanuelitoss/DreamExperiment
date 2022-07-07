@@ -66,13 +66,12 @@ int main(int argc,char** argv)
   // G4Random::setTheEngine(new CLHEP::RanecuEngine);
   double myseed = round(tStart);
   G4Random::setTheSeed(myseed);
-  std::cout << OBOLDBLUE << tStart << ORESET << std::endl;
 
   // Construct the default run manager
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
   // Detector construction
-  G4double angle_degrees = 22.5;
+  G4double angle_degrees = 30.;
   auto detConstruction = new DetectorConstruction(angle_degrees);
   runManager->SetUserInitialization(detConstruction);
   runManager->SetNumberOfThreads(1);
