@@ -95,7 +95,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
     // output
     ofstream output;
-    output.open("../datasets/Total/_1822_5_degrees.txt", ios::app);
+    output.open("../datasets/July2/p30degrees.txt", ios::app);
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     output << setw(7)
       << fEdep << "\t"
@@ -108,7 +108,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
       << Nphotons_Scint << endl;
     output.close();
 
-    output.open("../datasets/Total/numbers1822_5.txt", ios::app);
+    output.open("../datasets/July2/numbersP30.txt", ios::app);
     if(!output) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
     output << setw(7)
       << Nphotons_Cerenkov << "\t"

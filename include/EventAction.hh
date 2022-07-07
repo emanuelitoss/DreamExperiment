@@ -100,9 +100,8 @@ class EventAction : public G4UserEventAction
 // inline functions
 
 inline void EventAction::PassedThroughBGO(){
-  if(PMT1detection && PMT2detection){
-    IsInBGO = true;
-  }
+  // old: if(PMT1detection && PMT2detection) IsInBGO = true;
+  if(PMT1detection) IsInBGO = true;
 }
 
 inline void EventAction::PassedThroughScint1(){
