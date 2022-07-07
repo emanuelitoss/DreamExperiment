@@ -73,8 +73,8 @@ DetectorConstruction::~DetectorConstruction(){
   delete fStepLimit;
 }
 
-G4VPhysicalVolume* DetectorConstruction::Construct(){
-
+G4VPhysicalVolume* DetectorConstruction::Construct(){ 
+  
   // Get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
 
@@ -234,7 +234,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   G4double pos_scint1 = minimal_radius - distance_scintillators - 1.5 * shape_plasticZ;
   G4double pos_scint2 = minimal_radius - shape_plasticZ / 2;
   G4Material* plastic_material = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-        
+  
   // Plastic scintillators shape
   G4Box* PlasticShape = new G4Box("BGO Box", 0.5*shape_plasticX, 0.5*shape_plasticY, 0.5*shape_plasticZ);
 
@@ -275,11 +275,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysicalVolume* Envelope_PV) const {
 
   G4OpticalSurface* opBGOSurface = new G4OpticalSurface("BGO Surface");
-  // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.6/html/TrackingAndPhysics/physicsProcess.html#boundary-process
-  opBGOSurface->SetType(dielectric_LUTDAVIS); // dielectric_LUTDAVIS, dielectric_dielectric
+  // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.7/html/TrackingAndPhysics/physicsProcess.html
+  opBGOSurface->SetType(dielectric_LUTDAVIS); // dielectric_LUTDAVIS->get table BGO, dielectric_dielectric
   opBGOSurface->SetModel(DAVIS);  // fig 1.7 (link above) or glisur, DAVIS, unified
-  opBGOSurface->SetFinish(Polished_LUT); // Rough_LUT, Polished_LUT, ground
-  opBGOSurface->SetSigmaAlpha(0.05);
+  opBGOSurface->SetFinish(Rough_LUT); // Rough_LUT, Polished_LUT, ground
 
   G4LogicalBorderSurface* LogicalBGOSurface = new G4LogicalBorderSurface(
     "BGO Surface", BGO_PV, Envelope_PV, opBGOSurface);
@@ -323,11 +322,10 @@ void DetectorConstruction::OpticalSurfaceBGO(G4VPhysicalVolume* BGO_PV, G4VPhysi
 void DetectorConstruction::OpticalSurfaceBGO_PMT(G4VPhysicalVolume* BGO_PV, G4VPhysicalVolume* TheOtherPV) const {
 
   G4OpticalSurface* opBGOSurface = new G4OpticalSurface("BGO Surface");
-  // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.6/html/TrackingAndPhysics/physicsProcess.html#boundary-process
+  // see here: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/BackupVersions/V10.7/html/TrackingAndPhysics/physicsProcess.html
   opBGOSurface->SetType(dielectric_LUTDAVIS);
   opBGOSurface->SetModel(DAVIS);
   opBGOSurface->SetFinish(PolishedESRGrease_LUT); // Using optical grease between PMTs and BGO
-  opBGOSurface->SetSigmaAlpha(0.05);
 
   G4LogicalBorderSurface* LogicalBGOSurface = new G4LogicalBorderSurface(
     "BGO Surface", BGO_PV, TheOtherPV, opBGOSurface);
@@ -346,7 +344,7 @@ void DetectorConstruction::OpticalSurfaceBGO_PMT(G4VPhysicalVolume* BGO_PV, G4VP
   G4double energies_photons[] = { 2.*eV, 2.5*eV, 3.*eV, 3.5*eV, 4.*eV,
                                 4.5*eV, 4.75*eV, 4.9*eV, 5.*eV, 5.4*eV };
   G4double reflectivity[] = { 0.125, 0.13, 0.14, 0.155, 0.175,
-                              0.25, 0.29, 0.243, 0.21, 0.22 };   
+                              0.25, 0.29, 0.243, 0.21, 0.22 };
 
   G4MaterialPropertiesTable* SurfaceTable = new G4MaterialPropertiesTable();
 
