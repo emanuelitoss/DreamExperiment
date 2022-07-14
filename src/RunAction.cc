@@ -239,12 +239,12 @@ void RunAction::EndOfRunAction(const G4Run* run){
       << " rms = "
       << G4BestUnit(analysisManager->GetH1(4)->rms(),  "Energy") << G4endl;
 
-    G4cout << " EnergyScintillationBGO : mean = "
-      << analysisManager->GetH1(5)->mean() << "Number of photons"
+    G4cout << " NumberCherenkovBGO : mean = "
+      << analysisManager->GetH1(5)->mean() << " Number of photons"
       << " rms = "
-      << analysisManager->GetH1(5)->rms() <<  "Number of photons" << G4endl;
+      << analysisManager->GetH1(5)->rms() <<  " Number of photons" << G4endl;
 
-    G4cout << " EnergyScintillationBGO : mean = "
+    G4cout << " NumberScintillationBGO : mean = "
       << analysisManager->GetH1(6)->mean() << " number of photons"
       << " rms = "
       << analysisManager->GetH1(6)->rms() <<  " number of photons" << G4endl;

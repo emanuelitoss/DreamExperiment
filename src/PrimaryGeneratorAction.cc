@@ -110,7 +110,11 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
   do{
+<<<<<<< HEAD
     // theta = GetRandomicTheta3CosCos();
+=======
+    //theta = GetRandomicTheta3CosCos();
+>>>>>>> update 18/06
     theta = acos(pow(G4UniformRand(),1./3));
   }while(theta > 0.7*radian); // contraint based on angular analysis
   
