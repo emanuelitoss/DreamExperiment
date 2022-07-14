@@ -114,11 +114,19 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
   do{
+<<<<<<< HEAD
     theta = acos(pow(G4UniformRand(),1./3));
   } while(theta>0.6);
 
   // in order to correct the envelope radius (+40% with respect minimal radius)
   const double radius = fEnvelopeSphere->GetOuterRadius();///1.4;
+=======
+    // theta = GetRandomicTheta3CosCos();
+    theta = acos(pow(G4UniformRand(),1./3));
+  }while(theta > 0.7*radian); // contraint based on angular analysis
+  
+  const double radius = fEnvelopeSphere->GetOuterRadius()/1.4;
+>>>>>>> b66f6911d7c5833e9935c0c584a55d218adf775d
 
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, -radius);

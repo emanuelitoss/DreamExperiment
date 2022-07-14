@@ -126,13 +126,13 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   // initialization of output files
   /*
   ofstream output;
-  output.open("../datasets/July2/m30degrees.txt");
+  output.open("../datasets/July2/p10degrees.txt");
   output << "# Energy losses in the three detectors (in MeV):" << "\n"
     << "# Total\tBGO\tPlastic_1\tPLastic_2\tCherenkovBGO\tScintillationBGO\tNCherenkov\tNScint"
     << "\n" << std::endl;
   output.close();
 
-  output.open("../datasets/July2/numbersM30.txt");
+  output.open("../datasets/July2/numbersP10.txt");
   output << "# Numbers of:" << "\n"
     << "# Detected C\tProduced C\tDetected S\tProduced S"
     << "\n" << std::endl;
