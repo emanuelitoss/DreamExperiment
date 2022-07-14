@@ -113,9 +113,9 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   // generation of randomic angles
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
-  //do{
+  do{
     theta = acos(pow(G4UniformRand(),1./3));
-  //} while(theta>0.6);
+  } while(theta>0.6);
 
   // in order to correct the envelope radius (+40% with respect minimal radius)
   const double radius = fEnvelopeSphere->GetOuterRadius();///1.4;
