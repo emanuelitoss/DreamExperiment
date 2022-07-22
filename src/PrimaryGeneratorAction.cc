@@ -115,13 +115,19 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   double theta;
   do{
 <<<<<<< HEAD
+<<<<<<< HEAD
     theta = acos(pow(G4UniformRand(),1./3));
   } while(theta>0.6);
 
   // in order to correct the envelope radius (+40% with respect minimal radius)
   const double radius = fEnvelopeSphere->GetOuterRadius();///1.4;
 =======
+=======
+>>>>>>> 366e67de73ff359cfe39d836375ba2fb54f6ebc5
     // theta = GetRandomicTheta3CosCos();
+=======
+    //theta = GetRandomicTheta3CosCos();
+>>>>>>> update 18/06
     theta = acos(pow(G4UniformRand(),1./3));
   }while(theta > 0.7*radian); // contraint based on angular analysis
   
