@@ -124,20 +124,18 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   analysisManager->OpenFile(fileName);
 
   // initialization of output files
-  /*
   ofstream output;
-  output.open("../datasets/July2/p10degrees.txt");
+  output.open("../degrees.txt");
   output << "# Energy losses in the three detectors (in MeV):" << "\n"
     << "# Total\tBGO\tPlastic_1\tPLastic_2\tCherenkovBGO\tScintillationBGO\tNCherenkov\tNScint"
     << "\n" << std::endl;
   output.close();
 
-  output.open("../datasets/July2/numbersP10.txt");
+  output.open("../numbers.txt");
   output << "# Numbers of:" << "\n"
     << "# Detected C\tProduced C\tDetected S\tProduced S"
     << "\n" << std::endl;
   output.close();
-  */
   
   // reset accumulables to their initial values
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();

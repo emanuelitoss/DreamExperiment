@@ -66,7 +66,6 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction(){
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //this function is called at the begining of ecah event
-  //
 
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get Envelope volume
@@ -82,16 +81,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   if ( fEnvelopeSphere ) {
-    // in order to correct the envelope radius (+40% with respect minimal radius)
-    envSizeR = fEnvelopeSphere->GetOuterRadius();///1.4;
+    // in order to correct the envelope radius (+40% with respect minimal radius) we divide by 140%.
+    envSizeR = fEnvelopeSphere->GetOuterRadius()/1.4;
   }
   else {
     G4ExceptionDescription msg;
     msg << "Envelope volume of box shape not found.\n";
     msg << "Perhaps you have changed geometry.\n";
     msg << "The gun will be place at the center.";
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
+    G4Exception("PrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002",JustWarning,msg);
   }
 
   ParticleKinematicsGenerator();
@@ -114,25 +112,15 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   double phi = G4UniformRand() * 2 * M_PI * radian;
   double theta;
   do{
-<<<<<<< HEAD
-<<<<<<< HEAD
     theta = acos(pow(G4UniformRand(),1./3));
-  } while(theta>0.6);
+  } while(theta > 0.6*radian); // for theta > 0.6 rad we don't detect any muon, so I generate again.
 
   // in order to correct the envelope radius (+40% with respect minimal radius)
   const double radius = fEnvelopeSphere->GetOuterRadius();///1.4;
-=======
-=======
->>>>>>> 366e67de73ff359cfe39d836375ba2fb54f6ebc5
-    // theta = GetRandomicTheta3CosCos();
-=======
-    //theta = GetRandomicTheta3CosCos();
->>>>>>> update 18/06
     theta = acos(pow(G4UniformRand(),1./3));
   }while(theta > 0.7*radian); // contraint based on angular analysis
   
   const double radius = fEnvelopeSphere->GetOuterRadius()/1.4;
->>>>>>> b66f6911d7c5833e9935c0c584a55d218adf775d
 
   // direction of the beam
   G4ThreeVector* Direction_Beam = new G4ThreeVector(0, 0, -radius);
@@ -153,12 +141,11 @@ void PrimaryGeneratorAction::ParticleKinematicsGenerator(){
   Position_Beam->rotateZ(phi);
   
   // writing in output file
-  /*
   ofstream* output = new ofstream();
   output->open(fileName, ios::app);
   if(!(*output)) cout << OBOLDRED << "ERROR: Could not open the file" << ORESET << endl;
   *output << setw(7) << position_x << "\t" << position_y << "\t" << theta+M_PI << "\t" << phi << endl;;
-  output->close();*/
+  output->close();
  
   // set position of the particle
   if(fUseRandomicGeneration)  fParticleGun->SetParticlePosition(*Position_Beam);
